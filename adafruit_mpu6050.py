@@ -73,24 +73,15 @@ _MPU6050_GYRO_CONFIG      = 0x1B # Gyro specfic configuration register
 _MPU6050_ACCEL_CONFIG     = 0x1C # Accelerometer specific configration register
 _MPU6050_INT_PIN_CONFIG   = 0x37 # Interrupt pin configuration register
 _MPU6050_ACCEL_OUT        = 0x3B # base address for sensor data reads
-_MPU6050_TEMP_H           = 0x41 # Temperature data high byte register
-_MPU6050_TEMP_L           = 0x42 # Temperature data low byte register
+_MPU6050_TEMP_OUT         = 0x41 # Temperature data high byte register
+_MPU6050_GYRO_OUT         = 0x43 # base address for sensor data reads
 _MPU6050_USER_CTRL        = 0x6A # FIFO and I2C Master control register
 _MPU6050_PWR_MGMT_1       = 0x6B # Primary power/sleep control register
 _MPU6050_PWR_MGMT_2       = 0x6C # Secondary power/sleep control register
 _MPU6050_WHO_AM_I         = 0x75 # Divice ID register
 
 STANDARD_GRAVITY = 9.80665
-# typedef enum fsync_out {
-#   MPU6050_FSYNC_OUT_DISABLED,
-#   MPU6050_FSYNC_OUT_TEMP,
-#   MPU6050_FSYNC_OUT_GYROX,
-#   MPU6050_FSYNC_OUT_GYROY,
-#   MPU6050_FSYNC_OUT_GYROZ,
-#   MPU6050_FSYNC_OUT_ACCELX,
-#   MPU6050_FSYNC_OUT_ACCELY,
-#   MPU6050_FSYNC_OUT_ACCEL_Z,
-# } mpu6050_fsync_out_t;
+
 
 # /**
 #  * @brief Clock source options
@@ -152,10 +143,10 @@ MPU6050_RANGE_2000_DEG = 3 # +/- 2000 deg/s
 #  * Allowed values for `setCycleRate`.
 #  */
 # typedef enum cycle_rate {
-#   MPU6050_CYCLE_1_25_HZ, # 1.25 Hz
-#   MPU6050_CYCLE_5_HZ,    # 5 Hz
-#   MPU6050_CYCLE_20_HZ,   # 20 Hz
-#   MPU6050_CYCLE_40_HZ,   # 40 Hz
+MPU6050_CYCLE_1_25_HZ = 0 # 1.25 Hz
+MPU6050_CYCLE_5_HZ = 1    # 5 Hz
+MPU6050_CYCLE_20_HZ = 2   # 20 Hz
+MPU6050_CYCLE_40_HZ = 3   # 40 Hz
 # } mpu6050_cycle_rate_t;
 class MPU6050:
 
@@ -189,46 +180,52 @@ class MPU6050:
     _filter_bandwidth = RWBits(2, _MPU6050_CONFIG, 3)
     _clock_source = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
     sleep = RWBit(_MPU6050_PWR_MGMT_1, 6, 1)
-    _raw_data_array = StructArray(_MPU6050_ACCEL_OUT, ">h", 7)
+    _raw_accel_data = StructArray(_MPU6050_ACCEL_OUT, ">h", 3)
+    _raw_gyro_data = StructArray(_MPU6050_GYRO_OUT, ">h", 3)
+    _raw_temp_data = UnaryStruct(_MPU6050_TEMP_OUT, ">h")
+    _cycle = RWBit(_MPU6050_PWR_MGMT_1, 5)
+    _cycle_rate = RWBits(2, _MPU6050_PWR_MGMT_2, 6, 1)
 
     @property
     def temperature(self):
-        """docs"""
-        raw_temperature = self._raw_data_array[3][0]
+        """The current temperature in  º C"""
+        raw_temperature = self._raw_temp_data
         temp = (raw_temperature + 12412.0) / 340.0
         return temp
 
     @property
     def acceleration(self):
-        raw_data = self._raw_data_array
+        """Acceleration X, Y, and Z axis data in m/s^2"""
+        raw_data = self._raw_accel_data
         raw_x = raw_data[0][0]
         raw_y = raw_data[1][0]
         raw_z = raw_data[2][0]
-        
+
         accel_range = self._accel_range
         accel_scale = 1
-        if (accel_range == MPU6050_RANGE_16_G):
+        if accel_range == MPU6050_RANGE_16_G:
             accel_scale = 2048
-        if (accel_range == MPU6050_RANGE_8_G):
+        if accel_range == MPU6050_RANGE_8_G:
             accel_scale = 4096
-        if (accel_range == MPU6050_RANGE_4_G):
+        if accel_range == MPU6050_RANGE_4_G:
             accel_scale = 8192
-        if (accel_range == MPU6050_RANGE_2_G):
+        if accel_range == MPU6050_RANGE_2_G:
             accel_scale = 16384
 
         # setup range dependant scaling
         accel_x = (raw_x / accel_scale) * STANDARD_GRAVITY
         accel_y = (raw_y / accel_scale) * STANDARD_GRAVITY
         accel_z = (raw_z / accel_scale) * STANDARD_GRAVITY
-        
+
         return (accel_x, accel_y, accel_z)
 
     @property
     def gyro(self):
-        raw_data = self._raw_data_array
-        raw_x = raw_data[4][0]
-        raw_y = raw_data[5][0]
-        raw_z = raw_data[6][0]
+        """Gyroscope X, Y, and Z axis data in º/s"""
+        raw_data = self._raw_gyro_data
+        raw_x = raw_data[0][0]
+        raw_y = raw_data[1][0]
+        raw_z = raw_data[2][0]
 
         gyro_scale = 1
         gyro_range = self._gyro_range
@@ -245,21 +242,17 @@ class MPU6050:
         gyro_x = (raw_x / gyro_scale)
         gyro_y = (raw_y / gyro_scale)
         gyro_z = (raw_z / gyro_scale)
-        
+
         return (gyro_x, gyro_y, gyro_z)
 
-#   mpu6050_gyro_range_t gyro_range = getGyroRange();
+    @property
+    def cycle(self):
+        """Enable or disable perodic measurement at a rate set by `cycle_rate`.
+        If the sensor was in sleep mode, it will be waken up to cycle"""
+        return self._cycle
 
-#   float gyro_scale = 1;
-#   if (gyro_range == MPU6050_RANGE_250_DEG)
-#     gyro_scale = 131;
-#   if (gyro_range == MPU6050_RANGE_500_DEG)
-#     gyro_scale = 65.5;
-#   if (gyro_range == MPU6050_RANGE_1000_DEG)
-#     gyro_scale = 32.8;
-#   if (gyro_range == MPU6050_RANGE_2000_DEG)
-#     gyro_scale = 16.4;
+    @cycle.setter
+    def cycle(self, value):
+        self.sleep = not value
+        self._cycle = value
 
-#   gyroX = rawGyro / gyro_scale;
-#   gyroY = rawGyro / gyro_scale;
-#   gyroZ = rawGyro / gyro_scale;
