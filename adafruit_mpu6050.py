@@ -161,7 +161,7 @@ class MPU6050:
 
     def __init__(self, i2c_bus, address=_MPU6050_DEFAULT_ADDRESS):
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
-        
+
         if self._device_id != _MPU6050_DEVICE_ID:
             raise RuntimeError("Failed to find MPU6050 - check your wiring!")
 
@@ -177,6 +177,7 @@ class MPU6050:
         # self._accel_range = MPU6050_RANGE_8_G
         self._filter_bandwidth = 0
         self._clock_source = 1
+        sleep(0.1)
         self.sleep = False
 
 
@@ -188,17 +189,15 @@ class MPU6050:
     _filter_bandwidth = RWBits(2, _MPU6050_CONFIG, 3)
     _clock_source = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
     sleep = RWBit(_MPU6050_PWR_MGMT_1, 6, 1)
-    #   setSampleRateDivisor(0);
-    # def __init__(self, register_address, struct_format, count):
     _raw_data_array = StructArray(_MPU6050_ACCEL_OUT, ">h", 7)
 
     @property
     def temperature(self):
         """docs"""
-        rawTemp = self._raw_data_array[3][0]
-        temp = (rawTemp + 12412.0) / 340.0
+        raw_temperature = self._raw_data_array[3][0]
+        temp = (raw_temperature + 12412.0) / 340.0
         return temp
-    
+
     @property
     def acceleration(self):
         raw_data = self._raw_data_array
@@ -222,7 +221,7 @@ class MPU6050:
         accel_y = (raw_y / accel_scale) * STANDARD_GRAVITY
         accel_z = (raw_z / accel_scale) * STANDARD_GRAVITY
         
-        return (accel_x, accel_y, accel_z)    
+        return (accel_x, accel_y, accel_z)
 
     @property
     def gyro(self):
