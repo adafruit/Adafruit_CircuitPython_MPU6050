@@ -13,7 +13,7 @@ Introduction
     :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_MPU6050
     :alt: Build Status
 
-CircuitPython helper library for the MPU6050 6-axis Accelerometer and Gyroscope
+CircuitPython helper library for the MPU6050 6-DoF Accelerometer and Gyroscope
 
 
 Dependencies

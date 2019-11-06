@@ -22,7 +22,7 @@ setup(
     use_scm_version=True,
     setup_requires=['setuptools_scm'],
 
-    description='CircuitPython helper library for the MPU6050 6-axis Accelerometer and Gyroscope',
+    description='CircuitPython helper library for the MPU6050 6-DoF Accelerometer and Gyroscope',
     long_description=long_description,
     long_description_content_type='text/x-rst',
 
