@@ -9,8 +9,8 @@ Introduction
     :target: https://discord.gg/nBQh6qu
     :alt: Discord
 
-.. image:: https://travis-ci.com/adafruit/Adafruit_CircuitPython_MPU6050.svg?branch=master
-    :target: https://travis-ci.com/adafruit/Adafruit_CircuitPython_MPU6050
+.. image:: https://github.com/adafruit/Adafruit_CircuitPython_MPU6050/workflows/Build%20CI/badge.svg
+    :target: https://github.com/adafruit/Adafruit_CircuitPython_MPU6050/actions/
     :alt: Build Status
 
 CircuitPython helper library for the MPU6050 6-DoF Accelerometer and Gyroscope
