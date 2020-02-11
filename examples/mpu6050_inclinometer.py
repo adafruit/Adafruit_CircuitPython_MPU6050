@@ -1,4 +1,7 @@
-""" Display inclination data five times per second """
+# Display inclination data five times per second
+
+# See this page to learn the math and physics principals behind this example:
+# https://learn.adafruit.com/how-tall-is-it/gravity-and-acceleration
 
 import time
 from math import atan2, degrees
@@ -10,12 +13,17 @@ i2c = busio.I2C(board.SCL, board.SDA)
 sensor = adafruit_mpu6050.MPU6050(i2c)
 
 
+# Given a point (x, y) return the angle of that point relative to x axis.
+# Returns: angle in degrees (0-360)
+
 def vector_2_degrees(x, y):
     angle = degrees(atan2(y, x))
     if angle < 0:
         angle += 360
     return angle
 
+
+# Given an accelerometer sensor object return the inclination angles of X/Z and Y/Z
 
 def get_inclination(_sensor):
     x, y, z = _sensor.acceleration
