@@ -16,6 +16,7 @@ sensor = adafruit_mpu6050.MPU6050(i2c)
 # Given a point (x, y) return the angle of that point relative to x axis.
 # Returns: angle in degrees
 
+
 def vector_2_degrees(x, y):
     angle = degrees(atan2(y, x))
     if angle < 0:
@@ -25,6 +26,7 @@ def vector_2_degrees(x, y):
 
 # Given an accelerometer sensor object return the inclination angles of X/Z and Y/Z
 # Returns: tuple containing the two angles in degrees
+
 
 def get_inclination(_sensor):
     x, y, z = _sensor.acceleration

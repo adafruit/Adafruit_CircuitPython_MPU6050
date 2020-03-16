@@ -54,32 +54,34 @@ from adafruit_register.i2c_struct_array import StructArray
 from adafruit_register.i2c_bit import RWBit
 from adafruit_register.i2c_bits import RWBits
 import adafruit_bus_device.i2c_device as i2c_device
-# pylint: disable=bad-whitespace
-_MPU6050_DEFAULT_ADDRESS  = 0x68  # MPU6050 default i2c address w/ AD0 low
-_MPU6050_DEVICE_ID        = 0x68 # The correct MPU6050_WHO_AM_I value
 
-_MPU6050_SELF_TEST_X      = 0x0D # Self test factory calibrated values register
-_MPU6050_SELF_TEST_Y      = 0x0E # Self test factory calibrated values register
-_MPU6050_SELF_TEST_Z      = 0x0F # Self test factory calibrated values register
-_MPU6050_SELF_TEST_A      = 0x10 # Self test factory calibrated values register
-_MPU6050_SMPLRT_DIV       = 0x19 # sample rate divisor register
-_MPU6050_CONFIG           = 0x1A # General configuration register
-_MPU6050_GYRO_CONFIG      = 0x1B # Gyro specfic configuration register
-_MPU6050_ACCEL_CONFIG     = 0x1C # Accelerometer specific configration register
-_MPU6050_INT_PIN_CONFIG   = 0x37 # Interrupt pin configuration register
-_MPU6050_ACCEL_OUT        = 0x3B # base address for sensor data reads
-_MPU6050_TEMP_OUT         = 0x41 # Temperature data high byte register
-_MPU6050_GYRO_OUT         = 0x43 # base address for sensor data reads
-_MPU6050_SIG_PATH_RESET   = 0x68 # register to reset sensor signal paths
-_MPU6050_USER_CTRL        = 0x6A # FIFO and I2C Master control register
-_MPU6050_PWR_MGMT_1       = 0x6B # Primary power/sleep control register
-_MPU6050_PWR_MGMT_2       = 0x6C # Secondary power/sleep control register
-_MPU6050_WHO_AM_I         = 0x75 # Divice ID register
+# pylint: disable=bad-whitespace
+_MPU6050_DEFAULT_ADDRESS = 0x68  # MPU6050 default i2c address w/ AD0 low
+_MPU6050_DEVICE_ID = 0x68  # The correct MPU6050_WHO_AM_I value
+
+_MPU6050_SELF_TEST_X = 0x0D  # Self test factory calibrated values register
+_MPU6050_SELF_TEST_Y = 0x0E  # Self test factory calibrated values register
+_MPU6050_SELF_TEST_Z = 0x0F  # Self test factory calibrated values register
+_MPU6050_SELF_TEST_A = 0x10  # Self test factory calibrated values register
+_MPU6050_SMPLRT_DIV = 0x19  # sample rate divisor register
+_MPU6050_CONFIG = 0x1A  # General configuration register
+_MPU6050_GYRO_CONFIG = 0x1B  # Gyro specfic configuration register
+_MPU6050_ACCEL_CONFIG = 0x1C  # Accelerometer specific configration register
+_MPU6050_INT_PIN_CONFIG = 0x37  # Interrupt pin configuration register
+_MPU6050_ACCEL_OUT = 0x3B  # base address for sensor data reads
+_MPU6050_TEMP_OUT = 0x41  # Temperature data high byte register
+_MPU6050_GYRO_OUT = 0x43  # base address for sensor data reads
+_MPU6050_SIG_PATH_RESET = 0x68  # register to reset sensor signal paths
+_MPU6050_USER_CTRL = 0x6A  # FIFO and I2C Master control register
+_MPU6050_PWR_MGMT_1 = 0x6B  # Primary power/sleep control register
+_MPU6050_PWR_MGMT_2 = 0x6C  # Secondary power/sleep control register
+_MPU6050_WHO_AM_I = 0x75  # Divice ID register
 
 STANDARD_GRAVITY = 9.80665
 # pylint: enable=bad-whitespace
 
-class Range: # pylint: disable=too-few-public-methods
+
+class Range:  # pylint: disable=too-few-public-methods
     """Allowed values for `accelerometer_range`.
 
     - ``Range.RANGE_2_G``
@@ -88,12 +90,14 @@ class Range: # pylint: disable=too-few-public-methods
     - ``Range.RANGE_16_G``
 
     """
+
     RANGE_2_G = 0  # +/- 2g (default value)
     RANGE_4_G = 1  # +/- 4g
     RANGE_8_G = 2  # +/- 8g
-    RANGE_16_G = 3 # +/- 16g
+    RANGE_16_G = 3  # +/- 16g
 
-class GyroRange: # pylint: disable=too-few-public-methods
+
+class GyroRange:  # pylint: disable=too-few-public-methods
     """Allowed values for `gyro_range`.
 
     - ``GyroRange.RANGE_250_DPS``
@@ -102,12 +106,14 @@ class GyroRange: # pylint: disable=too-few-public-methods
     - ``GyroRange.RANGE_2000_DPS``
 
     """
+
     RANGE_250_DPS = 0  # +/- 250 deg/s (default value)
     RANGE_500_DPS = 1  # +/- 500 deg/s
-    RANGE_1000_DPS = 2 # +/- 1000 deg/s
-    RANGE_2000_DPS = 3 # +/- 2000 deg/s
+    RANGE_1000_DPS = 2  # +/- 1000 deg/s
+    RANGE_2000_DPS = 3  # +/- 2000 deg/s
 
-class Bandwidth: # pylint: disable=too-few-public-methods
+
+class Bandwidth:  # pylint: disable=too-few-public-methods
     """Allowed values for `filter_bandwidth`.
 
     - ``Bandwidth.BAND_260_HZ``
@@ -119,15 +125,17 @@ class Bandwidth: # pylint: disable=too-few-public-methods
     - ``Bandwidth.BAND_5_HZ``
 
     """
-    BAND_260_HZ = 0 # Docs imply this disables the filter
-    BAND_184_HZ = 1 # 184 Hz
+
+    BAND_260_HZ = 0  # Docs imply this disables the filter
+    BAND_184_HZ = 1  # 184 Hz
     BAND_94_HZ = 2  # 94 Hz
     BAND_44_HZ = 3  # 44 Hz
     BAND_21_HZ = 4  # 21 Hz
     BAND_10_HZ = 5  # 10 Hz
-    BAND_5_HZ = 6   # 5 Hz
+    BAND_5_HZ = 6  # 5 Hz
 
-class Rate: # pylint: disable=too-few-public-methods
+
+class Rate:  # pylint: disable=too-few-public-methods
     """Allowed values for `cycle_rate`.
 
     - ``Rate.CYCLE_1_25_HZ``
@@ -136,10 +144,12 @@ class Rate: # pylint: disable=too-few-public-methods
     - ``Rate.CYCLE_40_HZ``
 
     """
-    CYCLE_1_25_HZ = 0 # 1.25 Hz
-    CYCLE_5_HZ = 1    # 5 Hz
-    CYCLE_20_HZ = 2   # 20 Hz
-    CYCLE_40_HZ = 3   # 40 Hz
+
+    CYCLE_1_25_HZ = 0  # 1.25 Hz
+    CYCLE_5_HZ = 1  # 5 Hz
+    CYCLE_20_HZ = 2  # 20 Hz
+    CYCLE_40_HZ = 3  # 40 Hz
+
 
 class MPU6050:
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
@@ -148,6 +158,7 @@ class MPU6050:
         :param address: The I2C slave address of the sensor
 
     """
+
     def __init__(self, i2c_bus, address=_MPU6050_DEFAULT_ADDRESS):
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
 
@@ -161,11 +172,10 @@ class MPU6050:
         self._gyro_range = GyroRange.RANGE_500_DPS
         self._accel_range = Range.RANGE_2_G
         sleep(0.100)
-        self._clock_source = 1 # set to use gyro x-axis as reference
+        self._clock_source = 1  # set to use gyro x-axis as reference
         sleep(0.100)
         self.sleep = False
         sleep(0.010)
-
 
     def reset(self):
         """Reinitialize the sensor"""
@@ -174,7 +184,7 @@ class MPU6050:
             sleep(0.001)
         sleep(0.100)
 
-        _signal_path_reset = 0b111 # reset all sensors
+        _signal_path_reset = 0b111  # reset all sensors
         sleep(0.100)
 
     _clock_source = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
@@ -254,9 +264,9 @@ class MPU6050:
             gyro_scale = 16.4
 
         # setup range dependant scaling
-        gyro_x = (raw_x / gyro_scale)
-        gyro_y = (raw_y / gyro_scale)
-        gyro_z = (raw_z / gyro_scale)
+        gyro_x = raw_x / gyro_scale
+        gyro_y = raw_y / gyro_scale
+        gyro_z = raw_z / gyro_scale
 
         return (gyro_x, gyro_y, gyro_z)
 
