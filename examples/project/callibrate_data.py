@@ -1,7 +1,1 @@
-# """Code for maintaining the data before storing it to the database"""
-# class DataCallibration():
-#
-#     dict ={}
-#     def callibrate(acc_x, acc_y, acc_z):
-#         dict = {'one':acc_x, 'two':acc_y,'three':acc_z}
-#         print(dict)
+"""Space to work with the retrieved data from sensor. You can delete this file if you are not trying to callibrate the data."""
