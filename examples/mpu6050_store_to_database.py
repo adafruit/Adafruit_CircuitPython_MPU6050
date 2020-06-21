@@ -1,3 +1,14 @@
+"""
+Author: Sanjog Sigdel
+--------------------------------------------------
+This example works only on Blinka / RasPi devices.
+--------------------------------------------------
+
+Code commented out in the file is just to show different way
+of playing around the sensor to connect and execute sql queries.
+
+Donot forget to make changes in the database configuration before running the code.
+"""
 import time
 import board
 import busio
@@ -50,9 +61,10 @@ if __name__ == "__main__":
         # print("Acceleration: X:%.2f, Y: %.2f, Z: %.2f m/s^2" % (mpu.acceleration))
         # print("Gyro X:%.2f, Y: %.2f, Z: %.2f degrees/s" % (mpu.gyro))
         # print("Temperature: %.2f C" % mpu.temperature)
+        
         x_out = "%.4f" % mpu.acceleration[0]
         y_out = "%.4f" % mpu.acceleration[1]
         z_out = "%.4f" % mpu.acceleration[2]
-        # print(x_out, y_out, z_out)
+        
         DatabaseConnect.connect(x_out, y_out, z_out)
-        time.sleep(3)
+        time.sleep(1)
