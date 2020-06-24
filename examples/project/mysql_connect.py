@@ -6,10 +6,6 @@ sid = random.randint(1, 100)
 
 
 class StoreToDatabase:
-    #    def __init__(self,acc_x,acc_y,acc_z):
-    #        self.acc_x = acc_x
-    #        self.acc_y = acc_y
-    #        self.acc_z = acc_z
     def check_if_connected():
         conn = None
         try:
@@ -24,9 +20,7 @@ class StoreToDatabase:
         except Error as e:
             print(e)
 
-    def accelerometer_store(
-        acc_x, acc_y, acc_z,
-    ):
+    def accelerometer_store(acc_x, acc_y, acc_z):
         try:
             print(
                 "Accelerometer Data:", sid, acc_x, acc_y, acc_z,
