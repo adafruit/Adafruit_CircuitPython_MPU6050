@@ -35,9 +35,7 @@ class DatabaseConnect:
             if conn.is_connected():
                 print("Connected to MySQL database")
                 print(x_out, y_out, z_out)
-                insert_query = (
-#                     INSERT INTO collector(acc_x, acc_y, acc_z) VALUES(%s, %s, %s)
-                )
+                insert_query = """INSERT INTO collector(acc_x, acc_y, acc_z) VALUES(%s, %s, %s)"""
                 cursor = conn.cursor()
                 cursor.execute(insert_query, (x_out, y_out, z_out))
                 conn.commit()
