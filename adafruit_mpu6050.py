@@ -55,7 +55,6 @@ from adafruit_register.i2c_bit import RWBit
 from adafruit_register.i2c_bits import RWBits
 import adafruit_bus_device.i2c_device as i2c_device
 
-# pylint: disable=bad-whitespace
 _MPU6050_DEFAULT_ADDRESS = 0x68  # MPU6050 default i2c address w/ AD0 low
 _MPU6050_DEVICE_ID = 0x68  # The correct MPU6050_WHO_AM_I value
 
@@ -78,7 +77,6 @@ _MPU6050_PWR_MGMT_2 = 0x6C  # Secondary power/sleep control register
 _MPU6050_WHO_AM_I = 0x75  # Divice ID register
 
 STANDARD_GRAVITY = 9.80665
-# pylint: enable=bad-whitespace
 
 
 class Range:  # pylint: disable=too-few-public-methods
