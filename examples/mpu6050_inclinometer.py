@@ -1,3 +1,6 @@
+# SPDX-FileCopyrightText: 2021 ladyada for Adafruit Industries
+# SPDX-License-Identifier: MIT
+
 # Display inclination data five times per second
 
 # See this page to learn the math and physics principals behind this example:

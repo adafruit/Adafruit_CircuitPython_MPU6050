@@ -20,7 +20,7 @@ by viewing the data in a serial plotter
 Sleep Example
 ---------------
 
-Observe how the cycle and sleep modes effect measurements 
+Observe how the cycle and sleep modes effect measurements
 by viewing the data in a serial plotter
 
 .. literalinclude:: ../examples/mpu6050_sleep_example.py
