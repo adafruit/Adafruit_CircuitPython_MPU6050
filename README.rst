@@ -1,3 +1,5 @@
+This fork aims to include a basic calibration routine, based on the code of Melika Barzegaran (see: https://github.com/melikabarzegaran/mpu6050-raw-calibration)
+
 Introduction
 ============
 
