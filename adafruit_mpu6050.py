@@ -59,6 +59,13 @@ _MPU6050_PWR_MGMT_1 = 0x6B  # Primary power/sleep control register
 _MPU6050_PWR_MGMT_2 = 0x6C  # Secondary power/sleep control register
 _MPU6050_WHO_AM_I = 0x75  # Divice ID register
 
+_MPU6050_ACCEL_OFFSET_X = 0x06
+_MPU6050_ACCEL_OFFSET_Y = 0x08
+_MPU6050_ACCEL_OFFSET_Z = 0x0A
+_MPU6050_GYRO_OFFSET_X = 0x13
+_MPU6050_GYRO_OFFSET_Y = 0x15
+_MPU6050_GYRO_OFFSET_Z = 0x17
+
 STANDARD_GRAVITY = 9.80665
 
 
@@ -182,6 +189,14 @@ class MPU6050:
     _raw_accel_data = StructArray(_MPU6050_ACCEL_OUT, ">h", 3)
     _raw_gyro_data = StructArray(_MPU6050_GYRO_OUT, ">h", 3)
     _raw_temp_data = ROUnaryStruct(_MPU6050_TEMP_OUT, ">h")
+
+    _raw_accel_offset_x = UnaryStruct(_MPU6050_ACCEL_OFFSET_X, ">h")
+    _raw_accel_offset_y = UnaryStruct(_MPU6050_ACCEL_OFFSET_Y, ">h")
+    _raw_accel_offset_z = UnaryStruct(_MPU6050_ACCEL_OFFSET_Z, ">h")
+
+    _raw_gyro_offset_x = UnaryStruct(_MPU6050_GYRO_OFFSET_X, ">h")
+    _raw_gyro_offset_y = UnaryStruct(_MPU6050_GYRO_OFFSET_Y, ">h")
+    _raw_gyro_offset_z = UnaryStruct(_MPU6050_GYRO_OFFSET_Z, ">h")
 
     _cycle = RWBit(_MPU6050_PWR_MGMT_1, 5)
     _cycle_rate = RWBits(2, _MPU6050_PWR_MGMT_2, 6, 1)
@@ -309,3 +324,57 @@ class MPU6050:
             raise ValueError("cycle_rate must be a Rate")
         self._cycle_rate = value
         sleep(0.01)
+
+    @property
+    def accel_offset_x(self):
+        """The sensor-internal offset for the accelerometer in x-axis."""
+        return self._raw_accel_offset_x
+
+    @accel_offset_x.setter
+    def accel_offset_x(self, value):
+        self._raw_accel_offset_x = value
+
+    @property
+    def accel_offset_y(self):
+        """The sensor-internal offset for the accelerometer in y-axis."""
+        return self._raw_accel_offset_y
+
+    @accel_offset_y.setter
+    def accel_offset_y(self, value):
+        self._raw_accel_offset_y = value
+
+    @property
+    def accel_offset_z(self):
+        """The sensor-internal offset for the accelerometer in z-axis."""
+        return self._raw_accel_offset_z
+
+    @accel_offset_z.setter
+    def accel_offset_z(self, value):
+        self._raw_accel_offset_z = value
+
+    @property
+    def gyro_offset_x(self):
+        """The sensor-internal offset for the gyroscope in x-axis."""
+        return self._raw_gyro_offset_x
+
+    @gyro_offset_x.setter
+    def gyro_offset_x(self, value):
+        self._raw_gyro_offset_x = value
+
+    @property
+    def gyro_offset_y(self):
+        """The sensor-internal offset for the gyroscope in y-axis."""
+        return self._raw_gyro_offset_y
+
+    @gyro_offset_y.setter
+    def gyro_offset_y(self, value):
+        self._raw_gyro_offset_y = value
+
+    @property
+    def gyro_offset_z(self):
+        """The sensor-internal offset for the gyroscope in z-axis."""
+        return self._raw_gyro_offset_z
+
+    @gyro_offset_z.setter
+    def gyro_offset_z(self, value):
+        self._raw_gyro_offset_z = value
