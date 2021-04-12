@@ -142,7 +142,7 @@ class Rate:  # pylint: disable=too-few-public-methods
     CYCLE_40_HZ = 3  # 40 Hz
 
 
-class MPU6050: # pylint: disable=too-many-instance-attributes
+class MPU6050:  # pylint: disable=too-many-instance-attributes
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
     :param ~busio.I2C i2c_bus: The I2C bus the MPU6050 is connected to.
@@ -259,10 +259,10 @@ class MPU6050: # pylint: disable=too-many-instance-attributes
         }
 
         self._logger.info('Current sensors offsets:')
-        self._logger.info(f'Accelerometer X: {self._raw_accel_offset_x}, Y: {self._raw_accel_offset_y}, '
-                          f'Z: {self._raw_accel_offset_z}')
-        self._logger.info(f'Gyroscope X: {self._raw_gyro_offset_x}, Y: {self._raw_gyro_offset_y}, '
-                          f'Z: {self._raw_gyro_offset_z}')
+        self._logger.info('Accelerometer x: %d, y: %d, z: %d',
+                          self._raw_accel_offset_x, self._raw_accel_offset_y, self._raw_accel_offset_z)
+        self._logger.info('Gyroscope x: %d, y: %d, z: %d',
+                          self._raw_gyro_offset_x, self._raw_gyro_offset_y, self._raw_gyro_offset_z)
 
         while not self.__is_calibrated(calibration_states):
             self.__write_offsets_to_sensor(offsets)
@@ -271,21 +271,20 @@ class MPU6050: # pylint: disable=too-many-instance-attributes
             self.__update_offsets(offsets, averages, steps, goals, tolerances, calibration_states, "accelerometer")
             self.__update_offsets(offsets, averages, steps, goals, tolerances, calibration_states, "gyroscope")
 
-        self._logger.info(f'New offsets:')
-        self._logger.info(f'Accelerometer X: {self._raw_accel_offset_x}, Y: {self._raw_accel_offset_y}, '
-                          f'Z: {self._raw_accel_offset_z}')
-        self._logger.info(f'Gyroscope X: {self._raw_gyro_offset_x}, Y: {self._raw_gyro_offset_y}, '
-                          f'Z: {self._raw_gyro_offset_z}')
+        self._logger.info('New sensor offsets:')
+        self._logger.info('Accelerometer X: %d, Y: %d, Z: %d',
+                          self._raw_accel_offset_x, self._raw_accel_offset_y, self._raw_accel_offset_z)
+        self._logger.info('Gyroscope X: %d, Y: %d, Z: %d',
+                          self._raw_gyro_offset_x, self._raw_gyro_offset_y, self._raw_gyro_offset_z)
         return (offsets['accelerometer']['x'], offsets['accelerometer']['y'], offsets['accelerometer']['z'],
                 offsets['gyroscope']['x'], offsets['gyroscope']['y'], offsets['gyroscope']['z'])
 
-
     def __write_offsets_to_sensor(self, offsets):
-        self._logger.debug(f'Write offsets:')
-        self._logger.debug(f'Accelerometer X: {offsets["accelerometer"]["x"]}, Y: {offsets["accelerometer"]["y"]}, '
-                           f'Z: {offsets["accelerometer"]["z"]}')
-        self._logger.debug(f'Gyroscope X: {offsets["gyroscope"]["x"]}, Y: {offsets["gyroscope"]["y"]}, '
-                           f'Z: {offsets["gyroscope"]["z"]}')
+        self._logger.debug('Write offsets:')
+        self._logger.debug('Accelerometer x: %d, y: %d, z: %d',
+                           offsets["accelerometer"]["x"], offsets["accelerometer"]["y"], offsets["accelerometer"]["z"])
+        self._logger.debug('Gyroscope x: %d, y: %d, z: %d',
+                           offsets["gyroscope"]["x"], offsets["gyroscope"]["y"], offsets["gyroscope"]["z"])
         self._raw_accel_offset_x = offsets['accelerometer']['x']
         self._raw_accel_offset_y = offsets['accelerometer']['y']
         self._raw_accel_offset_z = offsets['accelerometer']['z']
@@ -339,11 +338,12 @@ class MPU6050: # pylint: disable=too-many-instance-attributes
         averages['gyroscope']['y'] = int(sums['gyroscope']['y'] / averaging_size)
         averages['gyroscope']['z'] = int(sums['gyroscope']['z'] / averaging_size)
 
-        self._logger.debug(f'Averages:')
-        self._logger.debug(f'Accelerometer X: {averages["accelerometer"]["x"]}, Y: {averages["accelerometer"]["y"]}, '
-                           f'Z: {averages["accelerometer"]["z"]}')
-        self._logger.debug(f'Gyroscope X: {averages["gyroscope"]["x"]}, Y: {averages["gyroscope"]["y"]}, '
-                           f'Z: {averages["gyroscope"]["z"]}')
+        self._logger.debug('Current averages:')
+        self._logger.debug('Accelerometer x: %d, y: %d, z: %d',
+                           averages["accelerometer"]["x"], averages["accelerometer"]["y"],
+                           averages["accelerometer"]["z"])
+        self._logger.debug('Gyroscope x: %d, y: %d, z: %d',
+                           averages["gyroscope"]["x"], averages["gyroscope"]["y"], averages["gyroscope"]["z"])
 
         return averages
 
@@ -362,9 +362,9 @@ class MPU6050: # pylint: disable=too-many-instance-attributes
 
     # pylint: disable=no-self-use
     def __is_calibrated(self, calibration_states):
-        for sensor, axes in calibration_states.items():
-            for axis, calibrated in axes.items():
-                if not calibrated:
+        for sensor in calibration_states:
+            for axis in calibration_states[sensor]:
+                if not calibration_states[sensor][axis]:
                     return False
         return True
 
