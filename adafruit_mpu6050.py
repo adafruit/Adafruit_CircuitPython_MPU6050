@@ -368,7 +368,7 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
                     calibration_states[sensor][axis] = True
                     self._logger.debug(
                         '%s %s-axis is calibrated with difference: %d and offset: %d',
-                        sensor.capitalize(), difference, offsets[sensor][axis])
+                        sensor.capitalize(), axis, difference, offsets[sensor][axis])
 
     # pylint: disable=no-self-use
     def __is_calibrated(self, calibration_states):
