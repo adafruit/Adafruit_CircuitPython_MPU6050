@@ -142,7 +142,7 @@ class Rate:  # pylint: disable=too-few-public-methods
     CYCLE_40_HZ = 3  # 40 Hz
 
 
-class MPU6050:
+class MPU6050: # pylint: disable=too-many-instance-attributes
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
     :param ~busio.I2C i2c_bus: The I2C bus the MPU6050 is connected to.
@@ -179,6 +179,8 @@ class MPU6050:
         _signal_path_reset = 0b111  # reset all sensors
         sleep(0.100)
 
+    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-arguments
     def perform_calibration(self,
                             averaging_size: int = 1000,
                             discarding_size: int = 100,
