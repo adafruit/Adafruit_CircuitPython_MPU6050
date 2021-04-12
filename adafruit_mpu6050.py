@@ -197,26 +197,31 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
                             ) -> Tuple[int, int, int, int, int, int]:
 
         """
-         This method calculates the sensor offsets for the accelerometer and gyroscope by averaging values
-         while the sensor is NOT in motion and the PCB is placed on a flat surface, facing upwards.
-         (Be aware of the fact, that the calibration offsets are not persistent,
-         they have to be set manually, after each new i2c connection.)
+         This method calculates the sensor offsets for the accelerometer and gyroscope by averaging
+         values while the sensor is NOT in motion and the PCB is placed on a flat surface, facing
+         upwards. (Be aware of the fact, that the calibration offsets are not persistent, they
+         have to be set manually, after each new i2c connection.)
 
 
-         :param averaging_size:             Number of reading sensor values used to compute average.
-                                            Make it higher to get more precision but the sketch will be lower.
+         :param averaging_size:             Number of reading sensor values used to compute
+                                            average. Make it higher to get more precision but
+                                            the sketch will be lower.
                                             Default value is set to 1000.
-         :param discarding_size:            Number of reading sensor values to discard after setting a new offset.
+         :param discarding_size:            Number of reading sensor values to discard after setting
+                                            a new offset.
                                             Default value is set to 100.
-         :param accelerometer_tolerance:    Error range allowed for accelerometer calibration offsets.
-                                            Make it lower to get more precision, but sketch may not converge.
+         :param accelerometer_tolerance:    Error range allowed for accelerometer calibration
+                                            offsets. Make it lower to get more precision, but it
+                                            may not converge.
                                             Default value is set to 8.
          :param gyroscope_tolerance:        Error range allowed for gyroscope calibration offsets.
-                                            Make it lower to get more precision, but sketch may not converge.
+                                            Make it lower to get more precision, but sketch may not
+                                            converge.
                                             Default value is set to 1.
-         :param accelerometer_step:         Step value, tuned for accelerometer, used in each step of calibration.
-                                            Default value is set to 8.
-         :param gyroscope_step:             Step value, tuned for gyroscope, used in each step of calibration.
+         :param accelerometer_step:         Step value, tuned for accelerometer, used in each step
+                                            of calibration. Default value is set to 8.
+         :param gyroscope_step:             Step value, tuned for gyroscope, used in each step of
+                                            calibration.
                                             Default value is set to 3.
          :param accelerometer_x_goal:       The goal value for the x-axis of the accelerometer.
                                             Default value is 0.
@@ -341,15 +346,19 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
 
         self._logger.debug('Current averages:')
         self._logger.debug('Accelerometer x: %d, y: %d, z: %d',
-                           averages["accelerometer"]["x"], averages["accelerometer"]["y"],
+                           averages["accelerometer"]["x"],
+                           averages["accelerometer"]["y"],
                            averages["accelerometer"]["z"])
         self._logger.debug('Gyroscope x: %d, y: %d, z: %d',
-                           averages["gyroscope"]["x"], averages["gyroscope"]["y"], averages["gyroscope"]["z"])
+                           averages["gyroscope"]["x"],
+                           averages["gyroscope"]["y"],
+                           averages["gyroscope"]["z"])
 
         return averages
 
     # pylint: disable=no-self-use
-    def __update_offsets(self, offsets, averages, steps, goals, tolerances, calibration_states, sensor):
+    def __update_offsets(
+            self, offsets, averages, steps, goals, tolerances, calibration_states, sensor):
         for axis, calibrated in calibration_states[sensor].items():
             if not calibrated:
                 difference = goals[sensor][axis] - averages[sensor][axis]
