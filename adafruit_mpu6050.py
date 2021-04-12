@@ -31,6 +31,7 @@ Implementation Notes
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_MPU6050.git"
 
+import logging
 from time import sleep
 from typing import Tuple
 
@@ -150,6 +151,7 @@ class MPU6050:
     """
 
     def __init__(self, i2c_bus, address=_MPU6050_DEFAULT_ADDRESS):
+        self._logger = logging.getLogger('adafruit_mpu6050')
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
 
         if self._device_id != _MPU6050_DEVICE_ID:
@@ -169,14 +171,6 @@ class MPU6050:
 
     def reset(self):
         """Reinitialize the sensor"""
-
-        self._accel_x_is_calibrated = False
-        self._accel_y_is_calibrated = False
-        self._accel_z_is_calibrated = False
-        self._gyro_x_is_calibrated = False
-        self._gyro_y_is_calibrated = False
-        self._gyro_z_is_calibrated = False
-
         self._reset = True
         while self._reset is True:
             sleep(0.001)
@@ -203,7 +197,8 @@ class MPU6050:
         """
          This method calculates the sensor offsets for the accelerometer and gyroscope by averaging values
          while the sensor is NOT in motion and the PCB is placed on a flat surface, facing upwards.
-
+         (Be aware of the fact, that the calibration offsets are not persistent,
+         they have to be set manually, after each new i2c connection.)
 
 
          :param averaging_size:             Number of reading sensor values used to compute average.
@@ -236,138 +231,140 @@ class MPU6050:
                                             Default value is 0.
         """
 
-        averages = {
-            "accelerometer": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-            },
-            "gyroscope": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-            }
-        }
-
-        sums = {
-            "accelerometer": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-            },
-            "gyroscope": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-            }
-        }
-
         offsets = {
-            "accelerometer": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-            },
-            "gyroscope": {
-                "x": 0,
-                "y": 0,
-                "z": 0
-            }
+            "accelerometer": {"x": 0, "y": 0, "z": 0},
+            "gyroscope": {"x": 0, "y": 0, "z": 0}
         }
 
-        while not self.__is_calibrated():
+        calibration_states = {
+            "accelerometer": {"x": False, "y": False, "z": False},
+            "gyroscope": {"x": False, "y": False, "z": False}
+        }
 
-            # write current offsets to sensor
-            self._raw_accel_offset_x = offsets['accelerometer']['x']
-            self._raw_accel_offset_y = offsets['accelerometer']['y']
-            self._raw_accel_offset_z = offsets['accelerometer']['z']
-            self._raw_gyro_offset_x = offsets['gyroscope']['x']
-            self._raw_gyro_offset_y = offsets['gyroscope']['y']
-            self._raw_gyro_offset_z = offsets['gyroscope']['z']
+        goals = {
+            "accelerometer": {"x": accelerometer_x_goal, "y": accelerometer_y_goal, "z": accelerometer_z_goal},
+            "gyroscope": {"x": gyroscope_x_goal, "y": gyroscope_y_goal, "z": gyroscope_z_goal}
+        }
 
-            # discard unreliable values
-            for _ in range(discarding_size):
-                temp = self._raw_accel_data
-                temp = self._raw_gyro_data
+        tolerances = {
+            "accelerometer": accelerometer_tolerance,
+            "gyroscope": gyroscope_tolerance
+        }
 
-            # calculate sum of values for accelerometer and gyroscope
-            for _ in range(averaging_size):
-                raw_accel_data = self._raw_accel_data
-                raw_accel_x = raw_accel_data[0][0]
-                raw_accel_y = raw_accel_data[1][0]
-                raw_accel_z = raw_accel_data[2][0]
-                raw_gyro_data = self._raw_gyro_data
-                raw_gyro_x = raw_gyro_data[0][0]
-                raw_gyro_y = raw_gyro_data[1][0]
-                raw_gyro_z = raw_gyro_data[2][0]
+        steps = {
+            "accelerometer": accelerometer_step,
+            "gyroscope": gyroscope_step
+        }
 
-                sums['accelerometer']['x'] += raw_accel_x
-                sums['accelerometer']['y'] += raw_accel_y
-                sums['accelerometer']['z'] += raw_accel_z
-                sums['gyroscope']['x'] += raw_gyro_x
-                sums['gyroscope']['y'] += raw_gyro_y
-                sums['gyroscope']['z'] += raw_gyro_z
+        self._logger.info('Current sensors offsets:')
+        self._logger.info(f'Accelerometer X: {self._raw_accel_offset_x}, Y: {self._raw_accel_offset_y}, '
+                          f'Z: {self._raw_accel_offset_z}')
+        self._logger.info(f'Gyroscope X: {self._raw_gyro_offset_x}, Y: {self._raw_gyro_offset_y}, '
+                          f'Z: {self._raw_gyro_offset_z}')
 
-                # wait 2 ms to avoid getting same values over and over
-                sleep(0.002)
+        while not self.__is_calibrated(calibration_states):
+            self.__write_offsets_to_sensor(offsets)
+            self.__discard_unreliable_values(discarding_size)
+            averages = self.__calculate_average_values(averaging_size)
+            self.__update_offsets(offsets, averages, steps, goals, tolerances, calibration_states, "accelerometer")
+            self.__update_offsets(offsets, averages, steps, goals, tolerances, calibration_states, "gyroscope")
 
-            # calculate averages for accelerometer and gyroscope
-            averages['accelerometer']['x'] = int(sums['accelerometer']['x'] / averaging_size)
-            averages['accelerometer']['y'] = int(sums['accelerometer']['y'] / averaging_size)
-            averages['accelerometer']['z'] = int(sums['accelerometer']['z'] / averaging_size)
-            averages['gyroscope']['x'] = int(sums['gyroscope']['x'] / averaging_size)
-            averages['gyroscope']['y'] = int(sums['gyroscope']['y'] / averaging_size)
-            averages['gyroscope']['z'] = int(sums['gyroscope']['z'] / averaging_size)
-
-            # check if offsets lead to averages that are within the goals
-            if not self._accel_x_is_calibrated:
-                difference = abs(accelerometer_x_goal - averages['accelerometer']['x'])
-                if difference <= accelerometer_tolerance:
-                    offsets['accelerometer']['x'] += (difference / accelerometer_step)
-                else:
-                    self._accel_x_is_calibrated = True
-
-            if not self._accel_y_is_calibrated:
-                difference = abs(accelerometer_y_goal - averages['accelerometer']['y'])
-                if difference <= accelerometer_tolerance:
-                    offsets['accelerometer']['y'] += (difference / accelerometer_step)
-                else:
-                    self._accel_y_is_calibrated = True
-
-            if not self._accel_z_is_calibrated:
-                difference = abs(accelerometer_z_goal - averages['accelerometer']['z'])
-                if difference <= accelerometer_tolerance:
-                    offsets['accelerometer']['z'] += (difference / accelerometer_step)
-                else:
-                    self._accel_z_is_calibrated = True
-
-            if not self._gyro_x_is_calibrated:
-                difference = abs(gyroscope_x_goal - averages['gyroscope']['x'])
-                if difference <= gyroscope_tolerance:
-                    offsets['gyroscope']['x'] += (difference / gyroscope_step)
-                else:
-                    self._gyro_x_is_calibrated = True
-
-            if not self._gyro_y_is_calibrated:
-                difference = abs(gyroscope_y_goal - averages['gyroscope']['y'])
-                if difference <= gyroscope_tolerance:
-                    offsets['gyroscope']['y'] += (difference / gyroscope_step)
-                else:
-                    self._gyro_y_is_calibrated = True
-
-            if not self._gyro_z_is_calibrated:
-                difference = abs(gyroscope_z_goal - averages['gyroscope']['z'])
-                if difference <= gyroscope_tolerance:
-                    offsets['gyroscope']['z'] += (difference / gyroscope_step)
-                else:
-                    self._gyro_z_is_calibrated = True
-
+        self._logger.info(f'New offsets:')
+        self._logger.info(f'Accelerometer X: {self._raw_accel_offset_x}, Y: {self._raw_accel_offset_y}, '
+                          f'Z: {self._raw_accel_offset_z}')
+        self._logger.info(f'Gyroscope X: {self._raw_gyro_offset_x}, Y: {self._raw_gyro_offset_y}, '
+                          f'Z: {self._raw_gyro_offset_z}')
         return (offsets['accelerometer']['x'], offsets['accelerometer']['y'], offsets['accelerometer']['z'],
                 offsets['gyroscope']['x'], offsets['gyroscope']['y'], offsets['gyroscope']['z'])
 
-    def __is_calibrated(self):
-        return self._accel_x_is_calibrated and self._accel_y_is_calibrated and self._accel_z_is_calibrated \
-               and self._gyro_x_is_calibrated and self._gyro_y_is_calibrated and self._gyro_z_is_calibrated
+    # noinspection DuplicatedCode
+    def __write_offsets_to_sensor(self, offsets):
+        self._logger.debug(f'Write offsets:')
+        self._logger.debug(f'Accelerometer X: {offsets["accelerometer"]["x"]}, Y: {offsets["accelerometer"]["y"]}, '
+                           f'Z: {offsets["accelerometer"]["z"]}')
+        self._logger.debug(f'Gyroscope X: {offsets["gyroscope"]["x"]}, Y: {offsets["gyroscope"]["y"]}, '
+                           f'Z: {offsets["gyroscope"]["z"]}')
+        self._raw_accel_offset_x = offsets['accelerometer']['x']
+        self._raw_accel_offset_y = offsets['accelerometer']['y']
+        self._raw_accel_offset_z = offsets['accelerometer']['z']
+        self._raw_gyro_offset_x = offsets['gyroscope']['x']
+        self._raw_gyro_offset_y = offsets['gyroscope']['y']
+        self._raw_gyro_offset_z = offsets['gyroscope']['z']
+
+    def __discard_unreliable_values(self, discarding_size):
+        for _ in range(discarding_size):
+            temp = self._raw_accel_data
+            temp = self._raw_gyro_data
+            # wait 2 ms to avoid getting same values over and over
+            sleep(0.002)
+
+    def __calculate_average_values(self, averaging_size):
+        averages = {
+            "accelerometer": {"x": 0, "y": 0, "z": 0},
+            "gyroscope": {"x": 0, "y": 0, "z": 0}
+        }
+
+        sums = {
+            "accelerometer": {"x": 0, "y": 0, "z": 0},
+            "gyroscope": {"x": 0, "y": 0, "z": 0}
+        }
+
+        for _ in range(averaging_size):
+            raw_accel_data = self._raw_accel_data
+            raw_accel_x = raw_accel_data[0][0]
+            raw_accel_y = raw_accel_data[1][0]
+            raw_accel_z = raw_accel_data[2][0]
+            raw_gyro_data = self._raw_gyro_data
+            raw_gyro_x = raw_gyro_data[0][0]
+            raw_gyro_y = raw_gyro_data[1][0]
+            raw_gyro_z = raw_gyro_data[2][0]
+
+            sums['accelerometer']['x'] += raw_accel_x
+            sums['accelerometer']['y'] += raw_accel_y
+            sums['accelerometer']['z'] += raw_accel_z
+            sums['gyroscope']['x'] += raw_gyro_x
+            sums['gyroscope']['y'] += raw_gyro_y
+            sums['gyroscope']['z'] += raw_gyro_z
+
+            # wait 2 ms to avoid getting same values over and over
+            sleep(0.002)
+
+        # calculate averages for accelerometer and gyroscope
+        averages['accelerometer']['x'] = int(sums['accelerometer']['x'] / averaging_size)
+        averages['accelerometer']['y'] = int(sums['accelerometer']['y'] / averaging_size)
+        averages['accelerometer']['z'] = int(sums['accelerometer']['z'] / averaging_size)
+        averages['gyroscope']['x'] = int(sums['gyroscope']['x'] / averaging_size)
+        averages['gyroscope']['y'] = int(sums['gyroscope']['y'] / averaging_size)
+        averages['gyroscope']['z'] = int(sums['gyroscope']['z'] / averaging_size)
+
+        self._logger.debug(f'Averages:')
+        self._logger.debug(f'Accelerometer X: {averages["accelerometer"]["x"]}, Y: {averages["accelerometer"]["y"]}, '
+                           f'Z: {averages["accelerometer"]["z"]}')
+        self._logger.debug(f'Gyroscope X: {averages["gyroscope"]["x"]}, Y: {averages["gyroscope"]["y"]}, '
+                           f'Z: {averages["gyroscope"]["z"]}')
+
+        return averages
+
+    # noinspection PyMethodMayBeStatic
+    def __update_offsets(self, offsets, averages, steps, goals, tolerances, calibration_states, sensor):
+        for axis, calibrated in calibration_states[sensor].items():
+            if not calibrated:
+                difference = goals[sensor][axis] - averages[sensor][axis]
+                if abs(difference) > tolerances[sensor]:
+                    offsets[sensor][axis] += int((difference / steps[sensor]))
+                else:
+                    calibration_states[sensor][axis] = True
+                    self._logger.debug(
+                        f'{sensor.capitalize()} {axis}-axis is calibrated with difference: {difference} '
+                        f'and offset: {offsets[sensor][axis]}')
+
+    # noinspection PyMethodMayBeStatic
+    def __is_calibrated(self, calibration_states):
+        for sensor, axes in calibration_states.items():
+            for axis, calibrated in axes.items():
+                if not calibrated:
+                    return False
+        return True
 
     _clock_source = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
     _device_id = ROUnaryStruct(_MPU6050_WHO_AM_I, ">B")
@@ -388,17 +385,9 @@ class MPU6050:
     _raw_accel_offset_y = UnaryStruct(_MPU6050_ACCEL_OFFSET_Y, ">h")
     _raw_accel_offset_z = UnaryStruct(_MPU6050_ACCEL_OFFSET_Z, ">h")
 
-    _accel_x_is_calibrated = False
-    _accel_y_is_calibrated = False
-    _accel_z_is_calibrated = False
-
     _raw_gyro_offset_x = UnaryStruct(_MPU6050_GYRO_OFFSET_X, ">h")
     _raw_gyro_offset_y = UnaryStruct(_MPU6050_GYRO_OFFSET_Y, ">h")
     _raw_gyro_offset_z = UnaryStruct(_MPU6050_GYRO_OFFSET_Z, ">h")
-
-    _gyro_x_is_calibrated = False
-    _gyro_y_is_calibrated = False
-    _gyro_z_is_calibrated = False
 
     _cycle = RWBit(_MPU6050_PWR_MGMT_1, 5)
     _cycle_rate = RWBits(2, _MPU6050_PWR_MGMT_2, 6, 1)
