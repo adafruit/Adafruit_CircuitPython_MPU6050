@@ -142,7 +142,7 @@ class Rate:  # pylint: disable=too-few-public-methods
     CYCLE_40_HZ = 3  # 40 Hz
 
 
-class MPU6050:
+class MPU6050: # pylint: disable=too-many-instance-attributes
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
     :param ~busio.I2C i2c_bus: The I2C bus the MPU6050 is connected to.
@@ -179,6 +179,8 @@ class MPU6050:
         _signal_path_reset = 0b111  # reset all sensors
         sleep(0.100)
 
+    # pylint: disable=too-many-locals
+    # pylint: disable=too-many-arguments
     def perform_calibration(self,
                             averaging_size: int = 1000,
                             discarding_size: int = 100,
@@ -277,7 +279,7 @@ class MPU6050:
         return (offsets['accelerometer']['x'], offsets['accelerometer']['y'], offsets['accelerometer']['z'],
                 offsets['gyroscope']['x'], offsets['gyroscope']['y'], offsets['gyroscope']['z'])
 
-    # noinspection DuplicatedCode
+
     def __write_offsets_to_sensor(self, offsets):
         self._logger.debug(f'Write offsets:')
         self._logger.debug(f'Accelerometer X: {offsets["accelerometer"]["x"]}, Y: {offsets["accelerometer"]["y"]}, '
@@ -345,7 +347,7 @@ class MPU6050:
 
         return averages
 
-    # noinspection PyMethodMayBeStatic
+    # pylint: disable=no-self-use
     def __update_offsets(self, offsets, averages, steps, goals, tolerances, calibration_states, sensor):
         for axis, calibrated in calibration_states[sensor].items():
             if not calibrated:
@@ -358,7 +360,7 @@ class MPU6050:
                         f'{sensor.capitalize()} {axis}-axis is calibrated with difference: {difference} '
                         f'and offset: {offsets[sensor][axis]}')
 
-    # noinspection PyMethodMayBeStatic
+    # pylint: disable=no-self-use
     def __is_calibrated(self, calibration_states):
         for sensor, axes in calibration_states.items():
             for axis, calibrated in axes.items():
