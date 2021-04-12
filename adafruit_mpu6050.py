@@ -292,6 +292,7 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
         self._raw_gyro_offset_y = offsets['gyroscope']['y']
         self._raw_gyro_offset_z = offsets['gyroscope']['z']
 
+    # pylint: disable=unused-variable
     def __discard_unreliable_values(self, discarding_size):
         for _ in range(discarding_size):
             temp = self._raw_accel_data
