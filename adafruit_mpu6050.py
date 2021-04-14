@@ -151,7 +151,7 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
     """
 
     def __init__(self, i2c_bus, address=_MPU6050_DEFAULT_ADDRESS):
-        self._logger = logging.getLogger('adafruit_mpu6050')
+        self._logger = logging.getLogger("adafruit_mpu6050")
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
 
         if self._device_id != _MPU6050_DEVICE_ID:
@@ -181,121 +181,173 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
 
     # pylint: disable=too-many-locals
     # pylint: disable=too-many-arguments
-    def perform_calibration(self,
-                            averaging_size: int = 1000,
-                            discarding_size: int = 100,
-                            accelerometer_tolerance: int = 8,
-                            gyroscope_tolerance: int = 1,
-                            accelerometer_step: int = 8,
-                            gyroscope_step: int = 3,
-                            accelerometer_x_goal=0,
-                            accelerometer_y_goal=0,
-                            accelerometer_z_goal=16384,
-                            gyroscope_x_goal=0,
-                            gyroscope_y_goal=0,
-                            gyroscope_z_goal=0
-                            ) -> Tuple[int, int, int, int, int, int]:
+    def perform_calibration(
+        self,
+        averaging_size: int = 1000,
+        discarding_size: int = 100,
+        accelerometer_tolerance: int = 8,
+        gyroscope_tolerance: int = 1,
+        accelerometer_step: int = 8,
+        gyroscope_step: int = 3,
+        accelerometer_x_goal=0,
+        accelerometer_y_goal=0,
+        accelerometer_z_goal=16384,
+        gyroscope_x_goal=0,
+        gyroscope_y_goal=0,
+        gyroscope_z_goal=0,
+    ) -> Tuple[int, int, int, int, int, int]:
 
         """
-         This method calculates the sensor offsets for the accelerometer and gyroscope by averaging
-         values while the sensor is NOT in motion and the PCB is placed on a flat surface, facing
-         upwards. (Be aware of the fact, that the calibration offsets are not persistent, they
-         have to be set manually, after each new i2c connection.)
+        This method calculates the sensor offsets for the accelerometer and gyroscope by averaging
+        values while the sensor is NOT in motion and the PCB is placed on a flat surface, facing
+        upwards. (Be aware of the fact, that the calibration offsets are not persistent, they
+        have to be set manually, after each new i2c connection.)
 
 
-         :param averaging_size:             Number of reading sensor values used to compute
-                                            average. Make it higher to get more precision but
-                                            the sketch will be lower.
-                                            Default value is set to 1000.
-         :param discarding_size:            Number of reading sensor values to discard after setting
-                                            a new offset.
-                                            Default value is set to 100.
-         :param accelerometer_tolerance:    Error range allowed for accelerometer calibration
-                                            offsets. Make it lower to get more precision, but it
-                                            may not converge.
-                                            Default value is set to 8.
-         :param gyroscope_tolerance:        Error range allowed for gyroscope calibration offsets.
-                                            Make it lower to get more precision, but sketch may not
-                                            converge.
-                                            Default value is set to 1.
-         :param accelerometer_step:         Step value, tuned for accelerometer, used in each step
-                                            of calibration. Default value is set to 8.
-         :param gyroscope_step:             Step value, tuned for gyroscope, used in each step of
-                                            calibration.
-                                            Default value is set to 3.
-         :param accelerometer_x_goal:       The goal value for the x-axis of the accelerometer.
-                                            Default value is 0.
-         :param accelerometer_y_goal:       The goal value for the x-axis of the accelerometer.
-                                            Default value is 0.
-         :param accelerometer_z_goal:       The goal value for the x-axis of the accelerometer.
-                                            Default value is 16384, which is the equivalent of 1g,
-                                            indicating that the sensor is under gravity.
-         :param gyroscope_z_goal:           The goal value for the x-axis of the gyroscope.
-                                            Default value is 0.
-         :param gyroscope_y_goal:           The goal value for the y-axis of the gyroscope.
-                                            Default value is 0.
-         :param gyroscope_x_goal:           The goal value for the z-axis of the gyroscope.
-                                            Default value is 0.
+        :param averaging_size:             Number of reading sensor values used to compute
+                                           average. Make it higher to get more precision but
+                                           the sketch will be lower.
+                                           Default value is set to 1000.
+        :param discarding_size:            Number of reading sensor values to discard after setting
+                                           a new offset.
+                                           Default value is set to 100.
+        :param accelerometer_tolerance:    Error range allowed for accelerometer calibration
+                                           offsets. Make it lower to get more precision, but it
+                                           may not converge.
+                                           Default value is set to 8.
+        :param gyroscope_tolerance:        Error range allowed for gyroscope calibration offsets.
+                                           Make it lower to get more precision, but sketch may not
+                                           converge.
+                                           Default value is set to 1.
+        :param accelerometer_step:         Step value, tuned for accelerometer, used in each step
+                                           of calibration. Default value is set to 8.
+        :param gyroscope_step:             Step value, tuned for gyroscope, used in each step of
+                                           calibration.
+                                           Default value is set to 3.
+        :param accelerometer_x_goal:       The goal value for the x-axis of the accelerometer.
+                                           Default value is 0.
+        :param accelerometer_y_goal:       The goal value for the x-axis of the accelerometer.
+                                           Default value is 0.
+        :param accelerometer_z_goal:       The goal value for the x-axis of the accelerometer.
+                                           Default value is 16384, which is the equivalent of 1g,
+                                           indicating that the sensor is under gravity.
+        :param gyroscope_z_goal:           The goal value for the x-axis of the gyroscope.
+                                           Default value is 0.
+        :param gyroscope_y_goal:           The goal value for the y-axis of the gyroscope.
+                                           Default value is 0.
+        :param gyroscope_x_goal:           The goal value for the z-axis of the gyroscope.
+                                           Default value is 0.
         """
 
         offsets = {
             "accelerometer": {"x": 0, "y": 0, "z": 0},
-            "gyroscope": {"x": 0, "y": 0, "z": 0}
+            "gyroscope": {"x": 0, "y": 0, "z": 0},
         }
 
         calibration_states = {
             "accelerometer": {"x": False, "y": False, "z": False},
-            "gyroscope": {"x": False, "y": False, "z": False}
+            "gyroscope": {"x": False, "y": False, "z": False},
         }
 
         goals = {
-            "accelerometer": {"x": accelerometer_x_goal, "y": accelerometer_y_goal, "z": accelerometer_z_goal},
-            "gyroscope": {"x": gyroscope_x_goal, "y": gyroscope_y_goal, "z": gyroscope_z_goal}
+            "accelerometer": {
+                "x": accelerometer_x_goal,
+                "y": accelerometer_y_goal,
+                "z": accelerometer_z_goal,
+            },
+            "gyroscope": {
+                "x": gyroscope_x_goal,
+                "y": gyroscope_y_goal,
+                "z": gyroscope_z_goal,
+            },
         }
 
         tolerances = {
             "accelerometer": accelerometer_tolerance,
-            "gyroscope": gyroscope_tolerance
+            "gyroscope": gyroscope_tolerance,
         }
 
-        steps = {
-            "accelerometer": accelerometer_step,
-            "gyroscope": gyroscope_step
-        }
+        steps = {"accelerometer": accelerometer_step, "gyroscope": gyroscope_step}
 
-        self._logger.info('Current sensors offsets:')
-        self._logger.info('Accelerometer x: %d, y: %d, z: %d',
-                          self._raw_accel_offset_x, self._raw_accel_offset_y, self._raw_accel_offset_z)
-        self._logger.info('Gyroscope x: %d, y: %d, z: %d',
-                          self._raw_gyro_offset_x, self._raw_gyro_offset_y, self._raw_gyro_offset_z)
+        self._logger.info("Current sensors offsets:")
+        self._logger.info(
+            "Accelerometer x: %d, y: %d, z: %d",
+            self._raw_accel_offset_x,
+            self._raw_accel_offset_y,
+            self._raw_accel_offset_z,
+        )
+        self._logger.info(
+            "Gyroscope x: %d, y: %d, z: %d",
+            self._raw_gyro_offset_x,
+            self._raw_gyro_offset_y,
+            self._raw_gyro_offset_z,
+        )
 
         while not self.__is_calibrated(calibration_states):
             self.__write_offsets_to_sensor(offsets)
             self.__discard_unreliable_values(discarding_size)
             averages = self.__calculate_average_values(averaging_size)
-            self.__update_offsets(offsets, averages, steps, goals, tolerances, calibration_states, "accelerometer")
-            self.__update_offsets(offsets, averages, steps, goals, tolerances, calibration_states, "gyroscope")
+            self.__update_offsets(
+                offsets,
+                averages,
+                steps,
+                goals,
+                tolerances,
+                calibration_states,
+                "accelerometer",
+            )
+            self.__update_offsets(
+                offsets,
+                averages,
+                steps,
+                goals,
+                tolerances,
+                calibration_states,
+                "gyroscope",
+            )
 
-        self._logger.info('New sensor offsets:')
-        self._logger.info('Accelerometer X: %d, Y: %d, Z: %d',
-                          self._raw_accel_offset_x, self._raw_accel_offset_y, self._raw_accel_offset_z)
-        self._logger.info('Gyroscope X: %d, Y: %d, Z: %d',
-                          self._raw_gyro_offset_x, self._raw_gyro_offset_y, self._raw_gyro_offset_z)
-        return (offsets['accelerometer']['x'], offsets['accelerometer']['y'], offsets['accelerometer']['z'],
-                offsets['gyroscope']['x'], offsets['gyroscope']['y'], offsets['gyroscope']['z'])
+        self._logger.info("New sensor offsets:")
+        self._logger.info(
+            "Accelerometer X: %d, Y: %d, Z: %d",
+            self._raw_accel_offset_x,
+            self._raw_accel_offset_y,
+            self._raw_accel_offset_z,
+        )
+        self._logger.info(
+            "Gyroscope X: %d, Y: %d, Z: %d",
+            self._raw_gyro_offset_x,
+            self._raw_gyro_offset_y,
+            self._raw_gyro_offset_z,
+        )
+        return (
+            offsets["accelerometer"]["x"],
+            offsets["accelerometer"]["y"],
+            offsets["accelerometer"]["z"],
+            offsets["gyroscope"]["x"],
+            offsets["gyroscope"]["y"],
+            offsets["gyroscope"]["z"],
+        )
 
     def __write_offsets_to_sensor(self, offsets):
-        self._logger.debug('Write offsets:')
-        self._logger.debug('Accelerometer x: %d, y: %d, z: %d',
-                           offsets["accelerometer"]["x"], offsets["accelerometer"]["y"], offsets["accelerometer"]["z"])
-        self._logger.debug('Gyroscope x: %d, y: %d, z: %d',
-                           offsets["gyroscope"]["x"], offsets["gyroscope"]["y"], offsets["gyroscope"]["z"])
-        self._raw_accel_offset_x = offsets['accelerometer']['x']
-        self._raw_accel_offset_y = offsets['accelerometer']['y']
-        self._raw_accel_offset_z = offsets['accelerometer']['z']
-        self._raw_gyro_offset_x = offsets['gyroscope']['x']
-        self._raw_gyro_offset_y = offsets['gyroscope']['y']
-        self._raw_gyro_offset_z = offsets['gyroscope']['z']
+        self._logger.debug("Write offsets:")
+        self._logger.debug(
+            "Accelerometer x: %d, y: %d, z: %d",
+            offsets["accelerometer"]["x"],
+            offsets["accelerometer"]["y"],
+            offsets["accelerometer"]["z"],
+        )
+        self._logger.debug(
+            "Gyroscope x: %d, y: %d, z: %d",
+            offsets["gyroscope"]["x"],
+            offsets["gyroscope"]["y"],
+            offsets["gyroscope"]["z"],
+        )
+        self._raw_accel_offset_x = offsets["accelerometer"]["x"]
+        self._raw_accel_offset_y = offsets["accelerometer"]["y"]
+        self._raw_accel_offset_z = offsets["accelerometer"]["z"]
+        self._raw_gyro_offset_x = offsets["gyroscope"]["x"]
+        self._raw_gyro_offset_y = offsets["gyroscope"]["y"]
+        self._raw_gyro_offset_z = offsets["gyroscope"]["z"]
 
     # pylint: disable=unused-variable
     def __discard_unreliable_values(self, discarding_size):
@@ -308,12 +360,12 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
     def __calculate_average_values(self, averaging_size):
         averages = {
             "accelerometer": {"x": 0, "y": 0, "z": 0},
-            "gyroscope": {"x": 0, "y": 0, "z": 0}
+            "gyroscope": {"x": 0, "y": 0, "z": 0},
         }
 
         sums = {
             "accelerometer": {"x": 0, "y": 0, "z": 0},
-            "gyroscope": {"x": 0, "y": 0, "z": 0}
+            "gyroscope": {"x": 0, "y": 0, "z": 0},
         }
 
         for _ in range(averaging_size):
@@ -326,39 +378,50 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
             raw_gyro_y = raw_gyro_data[1][0]
             raw_gyro_z = raw_gyro_data[2][0]
 
-            sums['accelerometer']['x'] += raw_accel_x
-            sums['accelerometer']['y'] += raw_accel_y
-            sums['accelerometer']['z'] += raw_accel_z
-            sums['gyroscope']['x'] += raw_gyro_x
-            sums['gyroscope']['y'] += raw_gyro_y
-            sums['gyroscope']['z'] += raw_gyro_z
+            sums["accelerometer"]["x"] += raw_accel_x
+            sums["accelerometer"]["y"] += raw_accel_y
+            sums["accelerometer"]["z"] += raw_accel_z
+            sums["gyroscope"]["x"] += raw_gyro_x
+            sums["gyroscope"]["y"] += raw_gyro_y
+            sums["gyroscope"]["z"] += raw_gyro_z
 
             # wait 2 ms to avoid getting same values over and over
             sleep(0.002)
 
         # calculate averages for accelerometer and gyroscope
-        averages['accelerometer']['x'] = int(sums['accelerometer']['x'] / averaging_size)
-        averages['accelerometer']['y'] = int(sums['accelerometer']['y'] / averaging_size)
-        averages['accelerometer']['z'] = int(sums['accelerometer']['z'] / averaging_size)
-        averages['gyroscope']['x'] = int(sums['gyroscope']['x'] / averaging_size)
-        averages['gyroscope']['y'] = int(sums['gyroscope']['y'] / averaging_size)
-        averages['gyroscope']['z'] = int(sums['gyroscope']['z'] / averaging_size)
+        averages["accelerometer"]["x"] = int(
+            sums["accelerometer"]["x"] / averaging_size
+        )
+        averages["accelerometer"]["y"] = int(
+            sums["accelerometer"]["y"] / averaging_size
+        )
+        averages["accelerometer"]["z"] = int(
+            sums["accelerometer"]["z"] / averaging_size
+        )
+        averages["gyroscope"]["x"] = int(sums["gyroscope"]["x"] / averaging_size)
+        averages["gyroscope"]["y"] = int(sums["gyroscope"]["y"] / averaging_size)
+        averages["gyroscope"]["z"] = int(sums["gyroscope"]["z"] / averaging_size)
 
-        self._logger.debug('Current averages:')
-        self._logger.debug('Accelerometer x: %d, y: %d, z: %d',
-                           averages["accelerometer"]["x"],
-                           averages["accelerometer"]["y"],
-                           averages["accelerometer"]["z"])
-        self._logger.debug('Gyroscope x: %d, y: %d, z: %d',
-                           averages["gyroscope"]["x"],
-                           averages["gyroscope"]["y"],
-                           averages["gyroscope"]["z"])
+        self._logger.debug("Current averages:")
+        self._logger.debug(
+            "Accelerometer x: %d, y: %d, z: %d",
+            averages["accelerometer"]["x"],
+            averages["accelerometer"]["y"],
+            averages["accelerometer"]["z"],
+        )
+        self._logger.debug(
+            "Gyroscope x: %d, y: %d, z: %d",
+            averages["gyroscope"]["x"],
+            averages["gyroscope"]["y"],
+            averages["gyroscope"]["z"],
+        )
 
         return averages
 
     # pylint: disable=no-self-use
     def __update_offsets(
-            self, offsets, averages, steps, goals, tolerances, calibration_states, sensor):
+        self, offsets, averages, steps, goals, tolerances, calibration_states, sensor
+    ):
         for axis, calibrated in calibration_states[sensor].items():
             if not calibrated:
                 difference = goals[sensor][axis] - averages[sensor][axis]
@@ -367,8 +430,12 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
                 else:
                     calibration_states[sensor][axis] = True
                     self._logger.debug(
-                        '%s %s-axis is calibrated with difference: %d and offset: %d',
-                        sensor.capitalize(), axis, difference, offsets[sensor][axis])
+                        "%s %s-axis is calibrated with difference: %d and offset: %d",
+                        sensor.capitalize(),
+                        axis,
+                        difference,
+                        offsets[sensor][axis],
+                    )
 
     # pylint: disable=no-self-use
     def __is_calibrated(self, calibration_states):
