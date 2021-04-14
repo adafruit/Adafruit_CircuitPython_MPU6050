@@ -33,7 +33,6 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_MPU6050.git"
 
 import logging
 from time import sleep
-from typing import Tuple
 
 from adafruit_register.i2c_struct import UnaryStruct, ROUnaryStruct
 from adafruit_register.i2c_struct_array import StructArray
@@ -183,19 +182,19 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-arguments
     def perform_calibration(
         self,
-        averaging_size: int = 1000,
-        discarding_size: int = 100,
-        accelerometer_tolerance: int = 8,
-        gyroscope_tolerance: int = 1,
-        accelerometer_step: int = 8,
-        gyroscope_step: int = 3,
+        averaging_size=1000,
+        discarding_size=100,
+        accelerometer_tolerance=8,
+        gyroscope_tolerance=1,
+        accelerometer_step=8,
+        gyroscope_step=3,
         accelerometer_x_goal=0,
         accelerometer_y_goal=0,
         accelerometer_z_goal=16384,
         gyroscope_x_goal=0,
         gyroscope_y_goal=0,
         gyroscope_z_goal=0,
-    ) -> Tuple[int, int, int, int, int, int]:
+    ):
 
         """
         This method calculates the sensor offsets for the accelerometer and gyroscope by averaging
