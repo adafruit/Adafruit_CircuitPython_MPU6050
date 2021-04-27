@@ -3,13 +3,13 @@
 
 import time
 import board
-import busio
 import adafruit_mpu6050
 
-i2c = busio.I2C(board.SCL, board.SDA)
+i2c = board.I2C()  # uses board.SCL and board.SDA
 mpu = adafruit_mpu6050.MPU6050(i2c)
 mpu.accelerometer_range = adafruit_mpu6050.Range.RANGE_2_G
 mpu.gyro_range = adafruit_mpu6050.GyroRange.RANGE_250_DPS
+
 while True:
     # this prints out all the values like a tuple which Mu's plotter prefer
     print("(%.2f, %.2f, %.2f " % (mpu.acceleration), end=", ")

@@ -23,12 +23,12 @@ Table of Contents
 .. toctree::
     :caption: Tutorials
 
-
+    Adafruit MPU-6050 6-DoF Accel and Gyro Sensor Learning Guide <https://learn.adafruit.com/mpu6050-6-dof-accelerometer-and-gyro>
 
 .. toctree::
     :caption: Related Products
 
-* Adafruit's MPU6050 Breakout: https://adafruit.com/products/3886
+    Adafruit MPU-6050 6-DoF Accel and Gyro Sensor <https://adafruit.com/products/3886>
 
 
 

@@ -9,10 +9,9 @@
 import time
 from math import atan2, degrees
 import board
-import busio
 import adafruit_mpu6050
 
-i2c = busio.I2C(board.SCL, board.SDA)
+i2c = board.I2C()  # uses board.SCL and board.SDA
 sensor = adafruit_mpu6050.MPU6050(i2c)
 
 

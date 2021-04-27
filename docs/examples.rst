@@ -26,3 +26,12 @@ by viewing the data in a serial plotter
 .. literalinclude:: ../examples/mpu6050_sleep_example.py
     :caption: examples/mpu6050_sleep_example.py
     :linenos:
+
+Inclinometer Example
+--------------------
+
+Provides an example on how to use the sensor as an inclinometer
+
+.. literalinclude:: ../examples/mpu6050_inclinometer.py
+    :caption: examples/mpu6050_inclinometer.py
+    :linenos:

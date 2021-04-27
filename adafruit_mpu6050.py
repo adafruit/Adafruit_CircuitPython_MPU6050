@@ -15,15 +15,18 @@ Implementation Notes
 --------------------
 
 **Hardware:**
-* Adafruit's MPU6050 Breakout: https://adafruit.com/products/3886
+
+* Adafruit `MPU-6050 6-DoF Accel and Gyro Sensor
+  <https://www.adafruit.com/product/3886>`_
 
 **Software and Dependencies:**
 
 * Adafruit CircuitPython firmware for the supported boards:
-  https://github.com/adafruit/circuitpython/releases
-
-* Adafruit's Bus Device library: https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
-* Adafruit's Register library: https://github.com/adafruit/Adafruit_CircuitPython_Register
+  https://circuitpython.org/downloads
+* Adafruit's Bus Device library:
+  https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
+* Adafruit's Register library:
+  https://github.com/adafruit/Adafruit_CircuitPython_Register
 """
 
 # imports
@@ -65,10 +68,10 @@ STANDARD_GRAVITY = 9.80665
 class Range:  # pylint: disable=too-few-public-methods
     """Allowed values for `accelerometer_range`.
 
-    - ``Range.RANGE_2_G``
-    - ``Range.RANGE_4_G``
-    - ``Range.RANGE_8_G``
-    - ``Range.RANGE_16_G``
+    - :attr:`Range.RANGE_2_G`
+    - :attr:`Range.RANGE_4_G`
+    - :attr:`Range.RANGE_8_G`
+    - :attr:`Range.RANGE_16_G`
 
     """
 
@@ -81,10 +84,10 @@ class Range:  # pylint: disable=too-few-public-methods
 class GyroRange:  # pylint: disable=too-few-public-methods
     """Allowed values for `gyro_range`.
 
-    - ``GyroRange.RANGE_250_DPS``
-    - ``GyroRange.RANGE_500_DPS``
-    - ``GyroRange.RANGE_1000_DPS``
-    - ``GyroRange.RANGE_2000_DPS``
+    - :attr:`GyroRange.RANGE_250_DPS`
+    - :attr:`GyroRange.RANGE_500_DPS`
+    - :attr:`GyroRange.RANGE_1000_DPS`
+    - :attr:`GyroRange.RANGE_2000_DPS`
 
     """
 
@@ -97,13 +100,13 @@ class GyroRange:  # pylint: disable=too-few-public-methods
 class Bandwidth:  # pylint: disable=too-few-public-methods
     """Allowed values for `filter_bandwidth`.
 
-    - ``Bandwidth.BAND_260_HZ``
-    - ``Bandwidth.BAND_184_HZ``
-    - ``Bandwidth.BAND_94_HZ``
-    - ``Bandwidth.BAND_44_HZ``
-    - ``Bandwidth.BAND_21_HZ``
-    - ``Bandwidth.BAND_10_HZ``
-    - ``Bandwidth.BAND_5_HZ``
+    - :attr:`Bandwidth.BAND_260_HZ`
+    - :attr:`Bandwidth.BAND_184_HZ`
+    - :attr:`Bandwidth.BAND_94_HZ`
+    - :attr:`Bandwidth.BAND_44_HZ`
+    - :attr:`Bandwidth.BAND_21_HZ`
+    - :attr:`Bandwidth.BAND_10_HZ`
+    - :attr:`Bandwidth.BAND_5_HZ`
 
     """
 
@@ -119,10 +122,10 @@ class Bandwidth:  # pylint: disable=too-few-public-methods
 class Rate:  # pylint: disable=too-few-public-methods
     """Allowed values for `cycle_rate`.
 
-    - ``Rate.CYCLE_1_25_HZ``
-    - ``Rate.CYCLE_5_HZ``
-    - ``Rate.CYCLE_20_HZ``
-    - ``Rate.CYCLE_40_HZ``
+    - :attr:`Rate.CYCLE_1_25_HZ`
+    - :attr:`Rate.CYCLE_5_HZ`
+    - :attr:`Rate.CYCLE_20_HZ`
+    - :attr:`Rate.CYCLE_40_HZ`
 
     """
 
@@ -135,8 +138,34 @@ class Rate:  # pylint: disable=too-few-public-methods
 class MPU6050:
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
-    :param ~busio.I2C i2c_bus: The I2C bus the MPU6050 is connected to.
-    :param address: The I2C slave address of the sensor
+    :param ~busio.I2C i2c_bus: The I2C bus the device is connected to
+    :param int address: The I2C device address. Defaults to :const:`0x68`
+
+    **Quickstart: Importing and using the device**
+
+        Here is an example of using the :class:`MPU6050` class.
+        First you will need to import the libraries to use the sensor
+
+        .. code-block:: python
+
+            import board
+            import adafruit_mpu6050
+
+        Once this is done you can define your `board.I2C` object and define your sensor object
+
+        .. code-block:: python
+
+            i2c = board.I2C()  # uses board.SCL and board.SDA
+            mpu = adafruit_mpu6050.MPU6050(i2c)
+
+        Now you have access to the :attr:`acceleration`, :attr:`gyro`
+        and :attr:`temperature` attributes
+
+        .. code-block:: python
+
+            acc_x, acc_y, acc_z = sensor.acceleration
+            gyro_x, gyro_y, gyro_z = sensor.gyro
+            temperature = sensor.temperature
 
     """
 
@@ -194,14 +223,14 @@ class MPU6050:
 
     @property
     def temperature(self):
-        """The current temperature in  º C"""
+        """The current temperature in  º Celsius"""
         raw_temperature = self._raw_temp_data
         temp = (raw_temperature / 340.0) + 36.53
         return temp
 
     @property
     def acceleration(self):
-        """Acceleration X, Y, and Z axis data in m/s^2"""
+        """Acceleration X, Y, and Z axis data in :math:`m/s^2` """
         raw_data = self._raw_accel_data
         raw_x = raw_data[0][0]
         raw_y = raw_data[1][0]
@@ -227,7 +256,7 @@ class MPU6050:
 
     @property
     def gyro(self):
-        """Gyroscope X, Y, and Z axis data in º/s"""
+        """Gyroscope X, Y, and Z axis data in :math:`º/s` """
         raw_data = self._raw_gyro_data
         raw_x = raw_data[0][0]
         raw_y = raw_data[1][0]
@@ -253,7 +282,7 @@ class MPU6050:
 
     @property
     def cycle(self):
-        """Enable or disable perodic measurement at a rate set by `cycle_rate`.
+        """Enable or disable periodic measurement at a rate set by :meth:`cycle_rate`.
         If the sensor was in sleep mode, it will be waken up to cycle"""
         return self._cycle
 
