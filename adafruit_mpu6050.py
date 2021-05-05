@@ -16,15 +16,17 @@ Implementation Notes
 
 **Hardware:**
 
-* Adafruit `MPU-6050 6-DoF Accel and Gyro Sensor
-  <https://www.adafruit.com/product/3886>`_
+* `Adafruit MPU-6050 6-DoF Accel and Gyro Sensor
+  <https://www.adafruit.com/product/3886>`_ (Product ID: 3886)
 
 **Software and Dependencies:**
 
 * Adafruit CircuitPython firmware for the supported boards:
   https://circuitpython.org/downloads
+
 * Adafruit's Bus Device library:
   https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
+
 * Adafruit's Register library:
   https://github.com/adafruit/Adafruit_CircuitPython_Register
 """
