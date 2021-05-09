@@ -16,15 +16,17 @@ Implementation Notes
 
 **Hardware:**
 
-* Adafruit `MPU-6050 6-DoF Accel and Gyro Sensor
-  <https://www.adafruit.com/product/3886>`_
+* `Adafruit MPU-6050 6-DoF Accel and Gyro Sensor
+  <https://www.adafruit.com/product/3886>`_ (Product ID: 3886)
 
 **Software and Dependencies:**
 
 * Adafruit CircuitPython firmware for the supported boards:
   https://circuitpython.org/downloads
+
 * Adafruit's Bus Device library:
   https://github.com/adafruit/Adafruit_CircuitPython_BusDevice
+
 * Adafruit's Register library:
   https://github.com/adafruit/Adafruit_CircuitPython_Register
 """
@@ -34,6 +36,7 @@ Implementation Notes
 __version__ = "0.0.0-auto.0"
 __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_MPU6050.git"
 
+from math import radians
 from time import sleep
 from adafruit_register.i2c_struct import UnaryStruct, ROUnaryStruct
 from adafruit_register.i2c_struct_array import StructArray
@@ -274,9 +277,9 @@ class MPU6050:
             gyro_scale = 16.4
 
         # setup range dependant scaling
-        gyro_x = raw_x / gyro_scale
-        gyro_y = raw_y / gyro_scale
-        gyro_z = raw_z / gyro_scale
+        gyro_x = radians(raw_x / gyro_scale)
+        gyro_y = radians(raw_y / gyro_scale)
+        gyro_z = radians(raw_z / gyro_scale)
 
         return (gyro_x, gyro_y, gyro_z)
 
