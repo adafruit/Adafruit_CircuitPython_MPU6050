@@ -71,10 +71,10 @@ STANDARD_GRAVITY = 9.80665
 class Range:  # pylint: disable=too-few-public-methods
     """Allowed values for `accelerometer_range`.
 
-    - :attr:`Range.RANGE_2_G`
-    - :attr:`Range.RANGE_4_G`
-    - :attr:`Range.RANGE_8_G`
-    - :attr:`Range.RANGE_16_G`
+    * :attr:`Range.RANGE_2_G`
+    * :attr:`Range.RANGE_4_G`
+    * :attr:`Range.RANGE_8_G`
+    * :attr:`Range.RANGE_16_G`
 
     """
 
@@ -87,10 +87,10 @@ class Range:  # pylint: disable=too-few-public-methods
 class GyroRange:  # pylint: disable=too-few-public-methods
     """Allowed values for `gyro_range`.
 
-    - :attr:`GyroRange.RANGE_250_DPS`
-    - :attr:`GyroRange.RANGE_500_DPS`
-    - :attr:`GyroRange.RANGE_1000_DPS`
-    - :attr:`GyroRange.RANGE_2000_DPS`
+    * :attr:`GyroRange.RANGE_250_DPS`
+    * :attr:`GyroRange.RANGE_500_DPS`
+    * :attr:`GyroRange.RANGE_1000_DPS`
+    * :attr:`GyroRange.RANGE_2000_DPS`
 
     """
 
@@ -103,13 +103,13 @@ class GyroRange:  # pylint: disable=too-few-public-methods
 class Bandwidth:  # pylint: disable=too-few-public-methods
     """Allowed values for `filter_bandwidth`.
 
-    - :attr:`Bandwidth.BAND_260_HZ`
-    - :attr:`Bandwidth.BAND_184_HZ`
-    - :attr:`Bandwidth.BAND_94_HZ`
-    - :attr:`Bandwidth.BAND_44_HZ`
-    - :attr:`Bandwidth.BAND_21_HZ`
-    - :attr:`Bandwidth.BAND_10_HZ`
-    - :attr:`Bandwidth.BAND_5_HZ`
+    * :attr:`Bandwidth.BAND_260_HZ`
+    * :attr:`Bandwidth.BAND_184_HZ`
+    * :attr:`Bandwidth.BAND_94_HZ`
+    * :attr:`Bandwidth.BAND_44_HZ`
+    * :attr:`Bandwidth.BAND_21_HZ`
+    * :attr:`Bandwidth.BAND_10_HZ`
+    * :attr:`Bandwidth.BAND_5_HZ`
 
     """
 
@@ -125,10 +125,10 @@ class Bandwidth:  # pylint: disable=too-few-public-methods
 class Rate:  # pylint: disable=too-few-public-methods
     """Allowed values for `cycle_rate`.
 
-    - :attr:`Rate.CYCLE_1_25_HZ`
-    - :attr:`Rate.CYCLE_5_HZ`
-    - :attr:`Rate.CYCLE_20_HZ`
-    - :attr:`Rate.CYCLE_40_HZ`
+    * :attr:`Rate.CYCLE_1_25_HZ`
+    * :attr:`Rate.CYCLE_5_HZ`
+    * :attr:`Rate.CYCLE_20_HZ`
+    * :attr:`Rate.CYCLE_40_HZ`
 
     """
 
