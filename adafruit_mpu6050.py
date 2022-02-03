@@ -44,6 +44,12 @@ from adafruit_register.i2c_bit import RWBit
 from adafruit_register.i2c_bits import RWBits
 from adafruit_bus_device import i2c_device
 
+try:
+    from typing import Tuple
+    from busio import I2C
+except ImportError:
+    pass
+
 _MPU6050_DEFAULT_ADDRESS = 0x68  # MPU6050 default i2c address w/ AD0 low
 _MPU6050_DEVICE_ID = 0x68  # The correct MPU6050_WHO_AM_I value
 
@@ -71,10 +77,10 @@ STANDARD_GRAVITY = 9.80665
 class Range:  # pylint: disable=too-few-public-methods
     """Allowed values for `accelerometer_range`.
 
-    - :attr:`Range.RANGE_2_G`
-    - :attr:`Range.RANGE_4_G`
-    - :attr:`Range.RANGE_8_G`
-    - :attr:`Range.RANGE_16_G`
+    * :attr:`Range.RANGE_2_G`
+    * :attr:`Range.RANGE_4_G`
+    * :attr:`Range.RANGE_8_G`
+    * :attr:`Range.RANGE_16_G`
 
     """
 
@@ -87,10 +93,10 @@ class Range:  # pylint: disable=too-few-public-methods
 class GyroRange:  # pylint: disable=too-few-public-methods
     """Allowed values for `gyro_range`.
 
-    - :attr:`GyroRange.RANGE_250_DPS`
-    - :attr:`GyroRange.RANGE_500_DPS`
-    - :attr:`GyroRange.RANGE_1000_DPS`
-    - :attr:`GyroRange.RANGE_2000_DPS`
+    * :attr:`GyroRange.RANGE_250_DPS`
+    * :attr:`GyroRange.RANGE_500_DPS`
+    * :attr:`GyroRange.RANGE_1000_DPS`
+    * :attr:`GyroRange.RANGE_2000_DPS`
 
     """
 
@@ -103,13 +109,13 @@ class GyroRange:  # pylint: disable=too-few-public-methods
 class Bandwidth:  # pylint: disable=too-few-public-methods
     """Allowed values for `filter_bandwidth`.
 
-    - :attr:`Bandwidth.BAND_260_HZ`
-    - :attr:`Bandwidth.BAND_184_HZ`
-    - :attr:`Bandwidth.BAND_94_HZ`
-    - :attr:`Bandwidth.BAND_44_HZ`
-    - :attr:`Bandwidth.BAND_21_HZ`
-    - :attr:`Bandwidth.BAND_10_HZ`
-    - :attr:`Bandwidth.BAND_5_HZ`
+    * :attr:`Bandwidth.BAND_260_HZ`
+    * :attr:`Bandwidth.BAND_184_HZ`
+    * :attr:`Bandwidth.BAND_94_HZ`
+    * :attr:`Bandwidth.BAND_44_HZ`
+    * :attr:`Bandwidth.BAND_21_HZ`
+    * :attr:`Bandwidth.BAND_10_HZ`
+    * :attr:`Bandwidth.BAND_5_HZ`
 
     """
 
@@ -125,10 +131,10 @@ class Bandwidth:  # pylint: disable=too-few-public-methods
 class Rate:  # pylint: disable=too-few-public-methods
     """Allowed values for `cycle_rate`.
 
-    - :attr:`Rate.CYCLE_1_25_HZ`
-    - :attr:`Rate.CYCLE_5_HZ`
-    - :attr:`Rate.CYCLE_20_HZ`
-    - :attr:`Rate.CYCLE_40_HZ`
+    * :attr:`Rate.CYCLE_1_25_HZ`
+    * :attr:`Rate.CYCLE_5_HZ`
+    * :attr:`Rate.CYCLE_20_HZ`
+    * :attr:`Rate.CYCLE_40_HZ`
 
     """
 
@@ -172,7 +178,7 @@ class MPU6050:
 
     """
 
-    def __init__(self, i2c_bus, address=_MPU6050_DEFAULT_ADDRESS):
+    def __init__(self, i2c_bus: I2C, address: int = _MPU6050_DEFAULT_ADDRESS) -> None:
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
 
         if self._device_id != _MPU6050_DEVICE_ID:
@@ -190,7 +196,7 @@ class MPU6050:
         self.sleep = False
         sleep(0.010)
 
-    def reset(self):
+    def reset(self) -> None:
         """Reinitialize the sensor"""
         self._reset = True
         while self._reset is True:
@@ -225,14 +231,14 @@ class MPU6050:
     """The sample rate divisor. See the datasheet for additional detail"""
 
     @property
-    def temperature(self):
+    def temperature(self) -> float:
         """The current temperature in  º Celsius"""
         raw_temperature = self._raw_temp_data
         temp = (raw_temperature / 340.0) + 36.53
         return temp
 
     @property
-    def acceleration(self):
+    def acceleration(self) -> Tuple[float, float, float]:
         """Acceleration X, Y, and Z axis data in :math:`m/s^2` """
         raw_data = self._raw_accel_data
         raw_x = raw_data[0][0]
@@ -258,7 +264,7 @@ class MPU6050:
         return (accel_x, accel_y, accel_z)
 
     @property
-    def gyro(self):
+    def gyro(self) -> Tuple[float, float, float]:
         """Gyroscope X, Y, and Z axis data in :math:`º/s` """
         raw_data = self._raw_gyro_data
         raw_x = raw_data[0][0]
@@ -284,59 +290,59 @@ class MPU6050:
         return (gyro_x, gyro_y, gyro_z)
 
     @property
-    def cycle(self):
+    def cycle(self) -> bool:
         """Enable or disable periodic measurement at a rate set by :meth:`cycle_rate`.
         If the sensor was in sleep mode, it will be waken up to cycle"""
         return self._cycle
 
     @cycle.setter
-    def cycle(self, value):
+    def cycle(self, value: bool) -> None:
         self.sleep = not value
         self._cycle = value
 
     @property
-    def gyro_range(self):
+    def gyro_range(self) -> int:
         """The measurement range of all gyroscope axes. Must be a `GyroRange`"""
         return self._gyro_range
 
     @gyro_range.setter
-    def gyro_range(self, value):
+    def gyro_range(self, value: int) -> None:
         if (value < 0) or (value > 3):
             raise ValueError("gyro_range must be a GyroRange")
         self._gyro_range = value
         sleep(0.01)
 
     @property
-    def accelerometer_range(self):
+    def accelerometer_range(self) -> int:
         """The measurement range of all accelerometer axes. Must be a `Range`"""
         return self._accel_range
 
     @accelerometer_range.setter
-    def accelerometer_range(self, value):
+    def accelerometer_range(self, value: int) -> None:
         if (value < 0) or (value > 3):
             raise ValueError("accelerometer_range must be a Range")
         self._accel_range = value
         sleep(0.01)
 
     @property
-    def filter_bandwidth(self):
+    def filter_bandwidth(self) -> int:
         """The bandwidth of the gyroscope Digital Low Pass Filter. Must be a `GyroRange`"""
         return self._filter_bandwidth
 
     @filter_bandwidth.setter
-    def filter_bandwidth(self, value):
+    def filter_bandwidth(self, value: int) -> None:
         if (value < 0) or (value > 6):
             raise ValueError("filter_bandwidth must be a Bandwidth")
         self._filter_bandwidth = value
         sleep(0.01)
 
     @property
-    def cycle_rate(self):
+    def cycle_rate(self) -> int:
         """The rate that measurements are taken while in `cycle` mode. Must be a `Rate`"""
         return self._cycle_rate
 
     @cycle_rate.setter
-    def cycle_rate(self, value):
+    def cycle_rate(self, value: int) -> None:
         if (value < 0) or (value > 3):
             raise ValueError("cycle_rate must be a Rate")
         self._cycle_rate = value
