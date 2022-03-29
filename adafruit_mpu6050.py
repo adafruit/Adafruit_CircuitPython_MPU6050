@@ -239,7 +239,7 @@ class MPU6050:
 
     @property
     def acceleration(self) -> Tuple[float, float, float]:
-        """Acceleration X, Y, and Z axis data in :math:`m/s^2` """
+        """Acceleration X, Y, and Z axis data in :math:`m/s^2`"""
         raw_data = self._raw_accel_data
         raw_x = raw_data[0][0]
         raw_y = raw_data[1][0]
@@ -265,7 +265,7 @@ class MPU6050:
 
     @property
     def gyro(self) -> Tuple[float, float, float]:
-        """Gyroscope X, Y, and Z axis data in :math:`º/s` """
+        """Gyroscope X, Y, and Z axis data in :math:`º/s`"""
         raw_data = self._raw_gyro_data
         raw_x = raw_data[0][0]
         raw_y = raw_data[1][0]
