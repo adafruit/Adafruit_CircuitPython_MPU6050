@@ -68,147 +68,152 @@ _MPU6050_DEVICE_ID_AD0_LO = 0x68
 _MPU6050_DEVICE_ID_AD0_HI = 0x69
 
 """
-_MPU6050_XG_OFFS_TC   = const(0x00)     
-_MPU6050_YG_OFFS_TC   = const(0x01)       
-_MPU6050_ZG_OFFS_TC   = const(0x02)    # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE 
-_MPU6050_FINE_GAIN    = const(0x03)    
-_MPU6050_Y_FINE_GAIN  = const(0x04)   
-_MPU6050_Z_FINE_GAIN  = const(0x05)    
+_MPU6050_XG_OFFS_TC   = 0x00     
+_MPU6050_YG_OFFS_TC   = 0x01       
+_MPU6050_ZG_OFFS_TC   = 0x02    # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE 
+_MPU6050_FINE_GAIN    = 0x03   
+_MPU6050_Y_FINE_GAIN  = 0x04   
+_MPU6050_Z_FINE_GAIN  = 0x05   
 """
 
 # Accelerometer Offset Registers
-_MPU6050_XA_OFFS_USRH = const(0x06)
-_MPU6050_XA_OFFS_USRL = const(0x07)
-_MPU6050_YA_OFFS_USRH = const(0x08)
-_MPU6050_YA_OFFS_USRL = const(0x09)
-_MPU6050_ZA_OFFS_USRH = const(0x0A)
-_MPU6050_ZA_OFFS_USRL = const(0x0B)
+_MPU6050_XA_OFFS_USRH = 0x06
+_MPU6050_XA_OFFS_USRL = 0x07
+_MPU6050_YA_OFFS_USRH = 0x08
+_MPU6050_YA_OFFS_USRL = 0x09
+_MPU6050_ZA_OFFS_USRH = 0x0A
+_MPU6050_ZA_OFFS_USRL = 0x0B
   
 # Self Test Registers
-_MPU6050_SELF_TEST_X = const(0x0D)
-_MPU6050_SELF_TEST_Y = const(0x0E)
-_MPU6050_SELF_TEST_Z = const(0x0F)
-_MPU6050_SELF_TEST_A = const(0x10)
+_MPU6050_SELF_TEST_X = 0x0D
+_MPU6050_SELF_TEST_Y = 0x0E
+_MPU6050_SELF_TEST_Z = 0x0F
+_MPU6050_SELF_TEST_A = 0x10
 
 #  Gyroscope Offset Registers
-_MPU6050_XG_OFFS_USRH = const(0x13)
-_MPU6050_XG_OFFS_USRL = const(0x14)
-_MPU6050_YG_OFFS_USRH = const(0x15)
-_MPU6050_YG_OFFS_USRL = const(0x16)
-_MPU6050_ZG_OFFS_USRH = const(0x17)
-_MPU6050_ZG_OFFS_USRL = const(0x18)
+_MPU6050_XG_OFFS_USRH = 0x13
+_MPU6050_XG_OFFS_USRL = 0x14
+_MPU6050_YG_OFFS_USRH = 0x15
+_MPU6050_YG_OFFS_USRL = 0x16
+_MPU6050_ZG_OFFS_USRH = 0x17
+_MPU6050_ZG_OFFS_USRL = 0x18
     
 # Configuration Registers
-_MPU6050_SMPLRT_DIV   = const(0x19)
-_MPU6050_CONFIG       = const(0x1A)
-_MPU6050_GYRO_CONFIG  = const(0x1B)
-_MPU6050_ACCEL_CONFIG = const(0x1C)
+_MPU6050_SMPLRT_DIV   = 0x19
+_MPU6050_CONFIG       = 0x1A
+_MPU6050_GYRO_CONFIG  = 0x1B
+_MPU6050_ACCEL_CONFIG = 0x1C
 
 """
 # Freefall 
-_MPU6050_FF_THR = const(0x1D)               # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE
-_MPU6050_FF_DUR = const(0x1E)
+_MPU6050_FF_THR = 0x1D  # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE
+_MPU6050_FF_DUR = 0x1E
 
 # Motion Detection
-_MPU6050_MOT_DET_THRSHLD  = const(0x1F)
-_MPU6050_MOT_DET_DURATION = const(0x20)
-_MPU6050_ZRMOT_THR        = const(0x21)     # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE
-_MPU6050_ZRMOT_DUR        = const(0x22)     
+_MPU6050_MOT_DET_THRSHLD  = 0x1F
+_MPU6050_MOT_DET_DURATION = 0x20
+_MPU6050_ZRMOT_THR        = 0x21   
+_MPU6050_ZRMOT_DUR        = 0x22     
 """
 
 # FIFO Enable
-_MPU6050_FIFO_EN  = const(0x23)
+_MPU6050_FIFO_EN  = 0x23
 
 """
 # I2C Master/Slave Bus Control
-_MPU6050_I2C_MST_CTRL    = const(0x24)    
-_MPU6050_I2C_SLV0_ADDR   = const(0x25)
-_MPU6050_I2C_SLV0_REG    = const(0x26)
-_MPU6050_I2C_SLV0_CTRL   = const(0x27)    
-_MPU6050_I2C_SLV1_ADDR   = const(0x28)
-_MPU6050_I2C_SLV1_REG    = const(0x29)
-_MPU6050_I2C_SLV1_CTRL   = const(0x2A)    
-_MPU6050_I2C_SLV2_ADDR   = const(0x2B)
-_MPU6050_I2C_SLV2_REG    = const(0x2C)
-_MPU6050_I2C_SLV2_CTRL   = const(0x2D)       
-_MPU6050_I2C_SLV3_ADDR   = const(0x2E)		# FURTHER DEVELOPMENT NEEDED TO ENABLE THESE
-_MPU6050_I2C_SLV3_REG    = const(0x2F)
-_MPU6050_I2C_SLV3_CTRL   = const(0x30)    
-_MPU6050_I2C_SLV4_ADDR   = const(0x31)
-_MPU6050_I2C_SLV4_REG    = const(0x32)
-_MPU6050_I2C_SLV4_DO     = const(0x33)
-_MPU6050_I2C_SLV4_CTRL   = const(0x34)
-_MPU6050_I2C_SLV4_DI     = const(0x35)   
-_MPU6050_I2C_MST_STATUS  = const(0x36)
+_MPU6050_I2C_MST_CTRL    = 0x24 # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE
+_MPU6050_I2C_SLV0_ADDR   = 0x25
+_MPU6050_I2C_SLV0_REG    = 0x26
+_MPU6050_I2C_SLV0_CTRL   = 0x27    
+_MPU6050_I2C_SLV1_ADDR   = 0x28
+_MPU6050_I2C_SLV1_REG    = 0x29
+_MPU6050_I2C_SLV1_CTRL   = 0x2A    
+_MPU6050_I2C_SLV2_ADDR   = 0x2B
+_MPU6050_I2C_SLV2_REG    = 0x2C
+_MPU6050_I2C_SLV2_CTRL   = 0x2D       
+_MPU6050_I2C_SLV3_ADDR   = 0x2E 
+_MPU6050_I2C_SLV3_REG    = 0x2F
+_MPU6050_I2C_SLV3_CTRL   = 0x30    
+_MPU6050_I2C_SLV4_ADDR   = 0x31
+_MPU6050_I2C_SLV4_REG    = 0x32
+_MPU6050_I2C_SLV4_DO     = 0x33
+_MPU6050_I2C_SLV4_CTRL   = 0x34
+_MPU6050_I2C_SLV4_DI     = 0x35   
+_MPU6050_I2C_MST_STATUS  = 0x36
 """
 
 # Interrupt Configuration
-_MPU6050_INT_PIN_CFG    = const(0x37)
-_MPU6050_INT_ENABLE     = const(0x38)
+_MPU6050_INT_PIN_CFG    = 0x37
+_MPU6050_INT_ENABLE     = 0x38
 
-# _DMP_INT_STATUS = const(0x39)   
-_MPU6050_INT_STATUS     = const(0x3A)
+# _DMP_INT_STATUS = 0x39   
+_MPU6050_INT_STATUS     = 0x3A
     
 # Sensor Outputs
-_MPU6050_ACCEL_XOUT_H = const(0x3B)
-_MPU6050_ACCEL_XOUT_L = const(0x3C)
-_MPU6050_ACCEL_YOUT_H = const(0x3D)
-_MPU6050_ACCEL_YOUT_L = const(0x3E)
-_MPU6050_ACCEL_ZOUT_H = const(0x3F)
-_MPU6050_ACCEL_ZOUT_L = const(0x40)
-_MPU6050_TEMP_OUT_H   = const(0x41)
-_MPU6050_TEMP_OUT_L   = const(0x42)
-_MPU6050_GYRO_XOUT_H  = const(0x43)
-_MPU6050_GYRO_XOUT_L  = const(0x44)
-_MPU6050_GYRO_YOUT_H  = const(0x45)
-_MPU6050_GYRO_YOUT_L  = const(0x46)
-_MPU6050_GYRO_ZOUT_H  = const(0x47)
-_MPU6050_GYRO_ZOUT_L  = const(0x48)
-    
-# External Sensor Data
-_MPU6050_EXT_SENS_DATA_00 = const(0x49)
-_MPU6050_EXT_SENS_DATA_01 = const(0x4A)
-_MPU6050_EXT_SENS_DATA_02 = const(0x4B)
-_MPU6050_EXT_SENS_DATA_03 = const(0x4C)
-_MPU6050_EXT_SENS_DATA_04 = const(0x4D)
-_MPU6050_EXT_SENS_DATA_05 = const(0x4E)
-_MPU6050_EXT_SENS_DATA_06 = const(0x4F)
-_MPU6050_EXT_SENS_DATA_07 = const(0x50)
-_MPU6050_EXT_SENS_DATA_08 = const(0x51)
-_MPU6050_EXT_SENS_DATA_09 = const(0x52)
-_MPU6050_EXT_SENS_DATA_10 = const(0x53)
-_MPU6050_EXT_SENS_DATA_11 = const(0x54)
-_MPU6050_EXT_SENS_DATA_12 = const(0x55)
-_MPU6050_EXT_SENS_DATA_13 = const(0x56)
-_MPU6050_EXT_SENS_DATA_14 = const(0x57)
-_MPU6050_EXT_SENS_DATA_15 = const(0x58)
-_MPU6050_EXT_SENS_DATA_16 = const(0x59)
-_MPU6050_EXT_SENS_DATA_17 = const(0x5A)
-_MPU6050_EXT_SENS_DATA_18 = const(0x5B)
-_MPU6050_EXT_SENS_DATA_19 = const(0x5C)
-_MPU6050_EXT_SENS_DATA_20 = const(0x5D)
-_MPU6050_EXT_SENS_DATA_21 = const(0x5E)
-_MPU6050_EXT_SENS_DATA_22 = const(0x5F)
-_MPU6050_EXT_SENS_DATA_23 = const(0x60)
+_MPU6050_ACCEL_XOUT_H = 0x3B
+_MPU6050_ACCEL_XOUT_L = 0x3C
+_MPU6050_ACCEL_YOUT_H = 0x3D
+_MPU6050_ACCEL_YOUT_L = 0x3E
+_MPU6050_ACCEL_ZOUT_H = 0x3F
+_MPU6050_ACCEL_ZOUT_L = 0x40
+_MPU6050_TEMP_OUT_H   = 0x41
+_MPU6050_TEMP_OUT_L   = 0x42
+_MPU6050_GYRO_XOUT_H  = 0x43
+_MPU6050_GYRO_XOUT_L  = 0x44
+_MPU6050_GYRO_YOUT_H  = 0x45
+_MPU6050_GYRO_YOUT_L  = 0x46
+_MPU6050_GYRO_ZOUT_H  = 0x47
+_MPU6050_GYRO_ZOUT_L  = 0x48
+
+"""
+# External Sensor Data  More development needed to enable these
+_MPU6050_EXT_SENS_DATA_00 = 0x49
+_MPU6050_EXT_SENS_DATA_01 = 0x4A
+_MPU6050_EXT_SENS_DATA_02 = 0x4B
+_MPU6050_EXT_SENS_DATA_03 = 0x4C
+_MPU6050_EXT_SENS_DATA_04 = 0x4D
+_MPU6050_EXT_SENS_DATA_05 = 0x4E
+_MPU6050_EXT_SENS_DATA_06 = 0x4F
+_MPU6050_EXT_SENS_DATA_07 = 0x50
+_MPU6050_EXT_SENS_DATA_08 = 0x51
+_MPU6050_EXT_SENS_DATA_09 = 0x52
+_MPU6050_EXT_SENS_DATA_10 = 0x53
+_MPU6050_EXT_SENS_DATA_11 = 0x54
+_MPU6050_EXT_SENS_DATA_12 = 0x55
+_MPU6050_EXT_SENS_DATA_13 = 0x56
+_MPU6050_EXT_SENS_DATA_14 = 0x57
+_MPU6050_EXT_SENS_DATA_15 = 0x58
+_MPU6050_EXT_SENS_DATA_16 = 0x59
+_MPU6050_EXT_SENS_DATA_17 = 0x5A
+_MPU6050_EXT_SENS_DATA_18 = 0x5B
+_MPU6050_EXT_SENS_DATA_19 = 0x5C
+_MPU6050_EXT_SENS_DATA_20 = 0x5D
+_MPU6050_EXT_SENS_DATA_21 = 0x5E
+_MPU6050_EXT_SENS_DATA_22 = 0x5F
+_MPU6050_EXT_SENS_DATA_23 = 0x60
 
 # Motion Detect Status
-# _MPU6050_MOT_DETECT_STATUS = const(0x61)   
+# _MPU6050_MOT_DETECT_STATUS = 0x61   
+
 
 # I2C Slave DO
-_MPU6050_I2C_SLV0_DO = const(0x63)
-_MPU6050_I2C_SLV1_DO = const(0x64)
-_MPU6050_I2C_SLV2_DO = const(0x65)
-_MPU6050_I2C_SLV3_DO = const(0x66)
+_MPU6050_I2C_SLV0_DO = 0x63
+_MPU6050_I2C_SLV1_DO = 0x64
+_MPU6050_I2C_SLV2_DO = 0x65
+_MPU6050_I2C_SLV3_DO = 0x66
         
 # I2C Master Delay Control
-_MPU6050_I2C_MT_DELAY_CTRL = const(0x67)
-        
+_MPU6050_I2C_MT_DELAY_CTRL = 0x67
+"""
+
 # Resets / Enables
-_MPU6050_SIGNAL_PATH_RESET = const(0x68)
-# _MPU6050_MOT_DETECT_CTRL   = const(0x69)     
-_MPU6050_USER_CTRL         = const(0x6A)
-_MPU6050_PWR_MGMT_1        = const(0x6B)
-_MPU6050_PWR_MGMT_2        = const(0x6C)
+_MPU6050_SIGNAL_PATH_RESET = 0x68
+
+# _MPU6050_MOT_DETECT_CTRL = 0x69
+
+_MPU6050_USER_CTRL         = 0x6A
+_MPU6050_PWR_MGMT_1        = 0x6B
+_MPU6050_PWR_MGMT_2        = 0x6C
 
 """
 # DMP
@@ -220,14 +225,14 @@ _MPU6050_DMP_CFG_2      = const(0x71)
 """ 
 
 # FIFO Buffer Count
-_MPU6050_FIFO_COUNTH = const(0x72)
-_MPU6050_FIFO_COUNTl = const(0x73)
-_MPU6050_FIFO_R_W =    const(0x74)
+_MPU6050_FIFO_COUNTH = 0x72
+_MPU6050_FIFO_COUNTl = 0x73
+_MPU6050_FIFO_R_W =    0x74
         
 # Who am I?  "To be... or not to be? That -is- the question"
-_MPU6050_WHO_AM_I = const(0x75)
+_MPU6050_WHO_AM_I = 0x75
 
-STANDARD_GRAVITY = (9.80665)
+STANDARD_GRAVITY = 9.80665
 
 class Range:  # pylint: disable=too-few-public-methods
     """Allowed values for `accelerometer_range`.
@@ -344,9 +349,10 @@ class MPU6050:
         
         # Verify WHO_AM_I (register 0x75) responds with value of 104, regardless of AD0 state
         if self._who_am_i[0][0] != 104:
-            raise RuntimeError("MPU6050 Register Address 0x75 \"Who Am I\" expected return value of 0x68 (104) not found. "
-                               "Possible a device, other than MPU6050, responding from the same address."
-                               "Check for I2C address conflicts on the same I2C bus and try again.")
+            raise RuntimeError("MPU6050 Register Address 0x75 \"Who Am I\" expected return value of 0x68 "
+                               "(104) not found. Possible a device, other than MPU6050, responding "
+                               "from the same address. Check for I2C address conflicts on the same "
+                               "I2C bus and try again.")
         
         self.reset()
 
@@ -512,23 +518,5 @@ class MPU6050:
             raise ValueError("cycle_rate must be a Rate")
         self._cycle_rate = value
         sleep(0.01)
-
-### TEST SCRIPTING BELOW ###
-
-# Change I2C pin addresses to reflect your actual setup... :)
-import busio
-import board
-
-print("Inititalizing I2C Bus")
-i2c = busio.I2C(scl=board.A1, sda=board.A0)
-print("I2C.try_lock() =", i2c.try_lock())
-print("Devices on bus:", i2c.scan())
-i2c.unlock()
-print("I2C Bus unlocked")
-
-print("Creating MPU6050 object")
-test_mpu = MPU6050(i2c, 105)
-print("Current Readings:","\n\tTemperature:", test_mpu.temperature, "\n\tAcceleration:", test_mpu.acceleration, "\n\tGyro Tuple:", test_mpu.gyro)
-
 
 
