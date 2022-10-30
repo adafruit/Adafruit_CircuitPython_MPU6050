@@ -344,7 +344,8 @@ class MPU6050:
     def __init__(self, i2c_bus: I2C, address) -> None:
         
         # Check user input for correctness correctness
-        if (address is not 104 and address is not 105):
+        if address is not _MPU6050_DEVICE_ID_AD0_LO and
+        address is not _MPU6050_DEVICE_ID_AD0_GI:
             raise RuntimeError("MPU6050 address passed in is incorrect. Expecting "
                 "0x68 OR 0x69 (104 OR 105).  See Data Sheet / Register Map for details")
         
@@ -356,7 +357,7 @@ class MPU6050:
         
         # Verify WHO_AM_I (register 0x75) responds with value of 104, regardless of AD0 state.
         # This double checks the device responding is a MPU6050
-        if self._who_am_i[0][0] is 104:
+        if self._who_am_i[0][0] is _MPU6050_DEVICE_ID_AD0_LO:
             print("Communication to MPU6050 @", address, " confirmed.")
         else:
             raise RuntimeError("MPU6050 @ ", address, " invalid response from \"Who Am I\" "
