@@ -38,11 +38,14 @@ Implementation Notes
   implementation.  Please use at your own risk until further
   development allows for safe usage.
   
+  ** Datasheets, Register Maps, etc... **
+  
 * Datasheet: https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf
 
-  Register Map: https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf
+* Register Map: https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf
   
-  Offet Register Document: https://www.digikey.com/en/pdf/i/invensense/mpu-hardware-offset-registers
+* Offet Register Document: https://www.digikey.com/en/pdf/i/invensense/mpu-hardware-offset-registers
+
 """
 
 # imports
@@ -348,9 +351,13 @@ class MPU6050:
                                "Check Datasheet / Register Map documentation for more information.")
         
         # Verify WHO_AM_I (register 0x75) responds with value of 104, regardless of AD0 state
-        if self._who_am_i[0][0] != 104:
-            raise RuntimeError("MPU6050 Register Address 0x75 \"Who Am I\" expected return value of 0x68 "
-                               "(104) not found. Possible a device, other than MPU6050, responding "
+        try :
+            if self._who_am_i[0][0] == 104:
+                print("Register ox75 (WHO_AM_I) responded with expected value.  Communication "
+                "to mpu 6050 @", address, " confirmed.")
+        except:
+            raise RuntimeError("MPU6050 @ ", self.address, " invalid response from \"Who Am I\" "
+                               "(104 0x68) not found. Possible a device, other than MPU6050, responding "
                                "from the same address. Check for I2C address conflicts on the same "
                                "I2C bus and try again.")
         
