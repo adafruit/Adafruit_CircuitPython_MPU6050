@@ -344,8 +344,7 @@ class MPU6050:
     def __init__(self, i2c_bus: I2C, address) -> None:
         
         # Check user input for correctness correctness
-        if address is not _MPU6050_DEVICE_ID_AD0_LO and
-        address is not _MPU6050_DEVICE_ID_AD0_GI:
+        if address is not _MPU6050_DEVICE_ID_AD0_LO and address is not _MPU6050_DEVICE_ID_AD0_HI:
             raise RuntimeError("MPU6050 address passed in is incorrect. Expecting "
                 "0x68 OR 0x69 (104 OR 105).  See Data Sheet / Register Map for details")
         
