@@ -343,23 +343,26 @@ class MPU6050:
 
     def __init__(self, i2c_bus: I2C, address) -> None:
         
-        # Attempt to establish an I2CDevice object
-        try:
-            self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
-        except:
-            raise RuntimeError("Device address passed in is incorrect. Expecting 0x68 OR 0x69 (104 OR 105). "
-                               "Check Datasheet / Register Map documentation for more information.")
+        # Check user input for correctness correctness
+        if (address is not 104 and address is not 105):
+            raise RuntimeError("MPU6050 address passed in is incorrect. Expecting "
+                "0x68 OR 0x69 (104 OR 105).  See Data Sheet / Register Map for details")
         
-        # Verify WHO_AM_I (register 0x75) responds with value of 104, regardless of AD0 state
-        try :
-            if self._who_am_i[0][0] == 104:
-                print("Register ox75 (WHO_AM_I) responded with expected value.  Communication "
-                "to mpu 6050 @", address, " confirmed.")
-        except:
-            raise RuntimeError("MPU6050 @ ", self.address, " invalid response from \"Who Am I\" "
-                               "(104 0x68) not found. Possible a device, other than MPU6050, responding "
-                               "from the same address. Check for I2C address conflicts on the same "
-                               "I2C bus and try again.")
+        # Verify i2c_bus is not already locked to prevent a hang
+        i2c_bus.unlock()            
+         
+        # Attempt to establish an I2CDevice object
+        self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
+        
+        # Verify WHO_AM_I (register 0x75) responds with value of 104, regardless of AD0 state.
+        # This double checks the device responding is a MPU6050
+        if self._who_am_i[0][0] is 104:
+            print("Communication to MPU6050 @", address, " confirmed.")
+        else:
+            raise RuntimeError("MPU6050 @ ", address, " invalid response from \"Who Am I\" "
+                "(104 0x68) not found. Possible a device, other than MPU6050, responding "
+                "from the same address. Check for I2C address conflicts on the same "
+                "I2C bus and try again.")
         
         self.reset()
 
@@ -526,4 +529,26 @@ class MPU6050:
         self._cycle_rate = value
         sleep(0.01)
 
+""" 
 
+#    Test Script Below
+
+#    * MPU6050 AD0 high (using 0x69)
+#    * DS3231 on same bus (using 0x68)
+
+
+import busio
+import board
+
+# Get I2C warmed up
+print("Initializing I2C Bus")
+i2c = busio.I2C(scl=board.A1, sda=board.A0)
+print("I2C.try_lock() =", i2c.try_lock())
+print("Devices on bus:", i2c.scan())
+print("I2C.unlock() = True")
+
+# Create MPU6050 object
+print("Creating MPU6050 object")
+test_mpu = MPU6050(i2c, 105)
+print("Current Readings:","\n\tTemperature:", test_mpu.temperature, "\n\tAcceleration:", test_mpu.acceleration, "\n\tGyro Tuple:", test_mpu.gyro)
+"""
