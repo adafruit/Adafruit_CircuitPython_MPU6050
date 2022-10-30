@@ -226,7 +226,7 @@ _MPU6050_DMP_CFG_2      = const(0x71)
 
 # FIFO Buffer Count
 _MPU6050_FIFO_COUNTH = 0x72
-_MPU6050_FIFO_COUNTl = 0x73
+_MPU6050_FIFO_COUNTL = 0x73
 _MPU6050_FIFO_R_W =    0x74
         
 # Who am I?  "To be... or not to be? That -is- the question"
