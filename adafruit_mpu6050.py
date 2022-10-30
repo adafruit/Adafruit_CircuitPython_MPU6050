@@ -528,27 +528,3 @@ class MPU6050:
             raise ValueError("cycle_rate must be a Rate")
         self._cycle_rate = value
         sleep(0.01)
-
-""" 
-
-#    Test Script Below
-
-#    * MPU6050 AD0 high (using 0x69)
-#    * DS3231 on same bus (using 0x68)
-
-
-import busio
-import board
-
-# Get I2C warmed up
-print("Initializing I2C Bus")
-i2c = busio.I2C(scl=board.A1, sda=board.A0)
-print("I2C.try_lock() =", i2c.try_lock())
-print("Devices on bus:", i2c.scan())
-print("I2C.unlock() = True")
-
-# Create MPU6050 object
-print("Creating MPU6050 object")
-test_mpu = MPU6050(i2c, 105)
-print("Current Readings:","\n\tTemperature:", test_mpu.temperature, "\n\tAcceleration:", test_mpu.acceleration, "\n\tGyro Tuple:", test_mpu.gyro)
-"""
