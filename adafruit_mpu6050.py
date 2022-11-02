@@ -10,7 +10,7 @@ CircuitPython helper library for the MPU6050 6-DoF Accelerometer and Gyroscope
 
 WARNING: Reference(s) to "Master" / "Slave" used only to match original documentation
          by the manufacturer, TDK Invnesense.  Please feel free to rename these to
-         something more agreeable like Leader/Follower if you feel so inclined.  
+         something more agreeable like Leader/Follower if you feel so inclined.
 
 
 * Author(s): Bryan Siepert
@@ -33,17 +33,17 @@ Implementation Notes
 
 * Adafruit's Register library:
   https://github.com/adafruit/Adafruit_CircuitPython_Register
-  
+
 * Registers added without seeing concise documenation on their
   implementation.  Please use at your own risk until further
   development allows for safe usage.
-  
+
   ** Datasheets, Register Maps, etc... **
-  
+
 * Datasheet: https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Datasheet1.pdf
 
 * Register Map: https://invensense.tdk.com/wp-content/uploads/2015/02/MPU-6000-Register-Map1.pdf
-  
+
 * Offet Register Document: https://www.digikey.com/en/pdf/i/invensense/mpu-hardware-offset-registers
 
 """
@@ -71,12 +71,12 @@ _MPU6050_DEVICE_ID_AD0_LO = 0x68
 _MPU6050_DEVICE_ID_AD0_HI = 0x69
 
 """
-_MPU6050_XG_OFFS_TC   = 0x00     
-_MPU6050_YG_OFFS_TC   = 0x01       
-_MPU6050_ZG_OFFS_TC   = 0x02    # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE 
-_MPU6050_FINE_GAIN    = 0x03   
-_MPU6050_Y_FINE_GAIN  = 0x04   
-_MPU6050_Z_FINE_GAIN  = 0x05   
+_MPU6050_XG_OFFS_TC   = 0x00
+_MPU6050_YG_OFFS_TC   = 0x01
+_MPU6050_ZG_OFFS_TC   = 0x02    # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE
+_MPU6050_FINE_GAIN    = 0x03
+_MPU6050_Y_FINE_GAIN  = 0x04
+_MPU6050_Z_FINE_GAIN  = 0x05
 """
 
 # Accelerometer Offset Registers
@@ -86,7 +86,7 @@ _MPU6050_YA_OFFS_USRH = 0x08
 _MPU6050_YA_OFFS_USRL = 0x09
 _MPU6050_ZA_OFFS_USRH = 0x0A
 _MPU6050_ZA_OFFS_USRL = 0x0B
-  
+
 # Self Test Registers
 _MPU6050_SELF_TEST_X = 0x0D
 _MPU6050_SELF_TEST_Y = 0x0E
@@ -100,58 +100,58 @@ _MPU6050_YG_OFFS_USRH = 0x15
 _MPU6050_YG_OFFS_USRL = 0x16
 _MPU6050_ZG_OFFS_USRH = 0x17
 _MPU6050_ZG_OFFS_USRL = 0x18
-    
+
 # Configuration Registers
-_MPU6050_SMPLRT_DIV   = 0x19
-_MPU6050_CONFIG       = 0x1A
-_MPU6050_GYRO_CONFIG  = 0x1B
+_MPU6050_SMPLRT_DIV = 0x19
+_MPU6050_CONFIG = 0x1A
+_MPU6050_GYRO_CONFIG = 0x1B
 _MPU6050_ACCEL_CONFIG = 0x1C
 
 """
-# Freefall 
+# Freefall
 _MPU6050_FF_THR = 0x1D  # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE
 _MPU6050_FF_DUR = 0x1E
 
 # Motion Detection
 _MPU6050_MOT_DET_THRSHLD  = 0x1F
 _MPU6050_MOT_DET_DURATION = 0x20
-_MPU6050_ZRMOT_THR        = 0x21   
-_MPU6050_ZRMOT_DUR        = 0x22     
+_MPU6050_ZRMOT_THR        = 0x21
+_MPU6050_ZRMOT_DUR        = 0x22
 """
 
 # FIFO Enable
-_MPU6050_FIFO_EN  = 0x23
+_MPU6050_FIFO_EN = 0x23
 
 """
 # I2C Master/Slave Bus Control
 _MPU6050_I2C_MST_CTRL    = 0x24 # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE
 _MPU6050_I2C_SLV0_ADDR   = 0x25
 _MPU6050_I2C_SLV0_REG    = 0x26
-_MPU6050_I2C_SLV0_CTRL   = 0x27    
+_MPU6050_I2C_SLV0_CTRL   = 0x27
 _MPU6050_I2C_SLV1_ADDR   = 0x28
 _MPU6050_I2C_SLV1_REG    = 0x29
-_MPU6050_I2C_SLV1_CTRL   = 0x2A    
+_MPU6050_I2C_SLV1_CTRL   = 0x2A
 _MPU6050_I2C_SLV2_ADDR   = 0x2B
 _MPU6050_I2C_SLV2_REG    = 0x2C
-_MPU6050_I2C_SLV2_CTRL   = 0x2D       
-_MPU6050_I2C_SLV3_ADDR   = 0x2E 
+_MPU6050_I2C_SLV2_CTRL   = 0x2D
+_MPU6050_I2C_SLV3_ADDR   = 0x2E
 _MPU6050_I2C_SLV3_REG    = 0x2F
-_MPU6050_I2C_SLV3_CTRL   = 0x30    
+_MPU6050_I2C_SLV3_CTRL   = 0x30
 _MPU6050_I2C_SLV4_ADDR   = 0x31
 _MPU6050_I2C_SLV4_REG    = 0x32
 _MPU6050_I2C_SLV4_DO     = 0x33
 _MPU6050_I2C_SLV4_CTRL   = 0x34
-_MPU6050_I2C_SLV4_DI     = 0x35   
+_MPU6050_I2C_SLV4_DI     = 0x35
 _MPU6050_I2C_MST_STATUS  = 0x36
 """
 
 # Interrupt Configuration
-_MPU6050_INT_PIN_CFG    = 0x37
-_MPU6050_INT_ENABLE     = 0x38
+_MPU6050_INT_PIN_CFG = 0x37
+_MPU6050_INT_ENABLE = 0x38
 
-# _DMP_INT_STATUS = 0x39   
-_MPU6050_INT_STATUS     = 0x3A
-    
+# _DMP_INT_STATUS = 0x39
+_MPU6050_INT_STATUS = 0x3A
+
 # Sensor Outputs
 _MPU6050_ACCEL_XOUT_H = 0x3B
 _MPU6050_ACCEL_XOUT_L = 0x3C
@@ -159,14 +159,14 @@ _MPU6050_ACCEL_YOUT_H = 0x3D
 _MPU6050_ACCEL_YOUT_L = 0x3E
 _MPU6050_ACCEL_ZOUT_H = 0x3F
 _MPU6050_ACCEL_ZOUT_L = 0x40
-_MPU6050_TEMP_OUT_H   = 0x41
-_MPU6050_TEMP_OUT_L   = 0x42
-_MPU6050_GYRO_XOUT_H  = 0x43
-_MPU6050_GYRO_XOUT_L  = 0x44
-_MPU6050_GYRO_YOUT_H  = 0x45
-_MPU6050_GYRO_YOUT_L  = 0x46
-_MPU6050_GYRO_ZOUT_H  = 0x47
-_MPU6050_GYRO_ZOUT_L  = 0x48
+_MPU6050_TEMP_OUT_H = 0x41
+_MPU6050_TEMP_OUT_L = 0x42
+_MPU6050_GYRO_XOUT_H = 0x43
+_MPU6050_GYRO_XOUT_L = 0x44
+_MPU6050_GYRO_YOUT_H = 0x45
+_MPU6050_GYRO_YOUT_L = 0x46
+_MPU6050_GYRO_ZOUT_H = 0x47
+_MPU6050_GYRO_ZOUT_L = 0x48
 
 """
 # External Sensor Data  More development needed to enable these
@@ -196,15 +196,14 @@ _MPU6050_EXT_SENS_DATA_22 = 0x5F
 _MPU6050_EXT_SENS_DATA_23 = 0x60
 
 # Motion Detect Status
-# _MPU6050_MOT_DETECT_STATUS = 0x61   
-
+# _MPU6050_MOT_DETECT_STATUS = 0x61
 
 # I2C Slave DO
 _MPU6050_I2C_SLV0_DO = 0x63
 _MPU6050_I2C_SLV1_DO = 0x64
 _MPU6050_I2C_SLV2_DO = 0x65
 _MPU6050_I2C_SLV3_DO = 0x66
-        
+
 # I2C Master Delay Control
 _MPU6050_I2C_MT_DELAY_CTRL = 0x67
 """
@@ -214,28 +213,75 @@ _MPU6050_SIGNAL_PATH_RESET = 0x68
 
 # _MPU6050_MOT_DETECT_CTRL = 0x69
 
-_MPU6050_USER_CTRL         = 0x6A
-_MPU6050_PWR_MGMT_1        = 0x6B
-_MPU6050_PWR_MGMT_2        = 0x6C
+_MPU6050_USER_CTRL = 0x6A
+_MPU6050_PWR_MGMT_1 = 0x6B
+_MPU6050_PWR_MGMT_2 = 0x6C
 
 """
 # DMP
-_MPU6050_BANK_SEL       = const(0x6D)        
-_MPU6050_MEM_START_ADDR = const(0x6E) 
-_MPU6050_MEM_R_W        = const(0x6F)      # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE 
-_MPU6050_DMP_CFG_1      = const(0x70)      
-_MPU6050_DMP_CFG_2      = const(0x71)            
-""" 
+_MPU6050_BANK_SEL       = const(0x6D)
+_MPU6050_MEM_START_ADDR = const(0x6E)
+_MPU6050_MEM_R_W        = const(0x6F)      # FURTHER DEVELOPMENT NEEDED TO ENABLE THESE
+_MPU6050_DMP_CFG_1      = const(0x70)
+_MPU6050_DMP_CFG_2      = const(0x71)
+"""
 
 # FIFO Buffer Count
 _MPU6050_FIFO_COUNTH = 0x72
 _MPU6050_FIFO_COUNTL = 0x73
-_MPU6050_FIFO_R_W =    0x74
-        
+_MPU6050_FIFO_R_W = 0x74
+
 # Who am I?  "To be... or not to be? That -is- the question"
 _MPU6050_WHO_AM_I = 0x75
 
 STANDARD_GRAVITY = 9.80665
+
+
+class Clksel:  # pylint: disable=too-few-public-methods
+    """Allowed values for `_clock_source` Register object.
+
+    * :attr:'Clksel.CLKSEL_INTERNAL_8MHz
+    * :attr:'Clksel.CLKSEL_INTERNAL_X
+    * :attr:'Clksel.CLKSEL_INTERNAL_Y
+    * :attr:'Clksel.CLKSEL_INTERNAL_Z
+    * :attr:'Clksel.CLKSEL_EXTERNAL_32
+    * :attr:'Clksel.CLKSEL_EXTERNAL_19
+    * :attr:'Clksel.CLKSEL_RESERVED
+    * :attr:'Clksel.CLKSEL_STOP
+    """
+
+    CLKSEL_INTERNAL_8MHz = 0  # Internal 8MHz oscillator
+    CLKSEL_INTERNAL_X = 1  # PLL with X Axis gyroscope reference
+    CLKSEL_INTERNAL_Y = 2  # PLL with Y Axis gyroscope reference
+    CLKSEL_INTERNAL_Z = 3  # PLL with Z Axis gyroscope reference
+    CLKSEL_EXTERNAL_32 = 4  # External 32.768 kHz reference
+    CLKSEL_EXTERNAL_19 = 5  # External 19.2 MHz reference
+    CLKSEL_RESERVED = 6  # Reserved
+    CLKSEL_STOP = 7  # Stops the clock, constant reset mode
+
+
+class Ext_Sync_Set:  # pylint: disable=too-few-public-methods
+    """Allowed values for `_ext_sync_set` Register object.
+
+    * :attr:'Ext_Sync_Set.DISABLED
+    * :attr:'Ext_Sync_Set.TEMP_OUT_L
+    * :attr:'Ext_Sync_Set.GYRO_XOUT_L
+    * :attr:'Ext_Sync_Set.GYRO_YOUT_L
+    * :attr:'Ext_Sync_Set.GYRO_ZOUT_L
+    * :attr:'Ext_Sync_Set.ACCEL_XOUT_L
+    * :attr:'Ext_Sync_Set.ACCEL_YOUT_L
+    * :attr:'Ext_Sync_Set.ACCEL_ZOUT_L
+    """
+
+    DISABLED = 0  # FSYNC Input disabed
+    TEMP_OUT = 1  # Data found at MPU6050_TEMP_OUT_L
+    GYRO_XOUT = 2  # Data found at MPU6050_GYRO_XOUT
+    GYRO_YOUT = 3  # Data found at MPU6050_GYRO_YOUT
+    GYRO_ZOUT = 4  # Data found at MPU6050_GYRO_ZOUT
+    ACCEL_XOUT = 5  # Data found at MPU6050_ACCEL_XOUT
+    ACCEL_YOUT = 6  # Data found at MPU6050_ACCEL_YOUT
+    ACCEL_ZOUT = 7  # Data found at MPU6050_ACCEL_ZOUT
+
 
 class Range:  # pylint: disable=too-few-public-methods
     """Allowed values for `accelerometer_range`.
@@ -292,7 +338,7 @@ class Bandwidth:  # pylint: disable=too-few-public-methods
 
 
 class Rate:  # pylint: disable=too-few-public-methods
-    """Allowed values for `cycle_rate`.
+    """Allowed values for `_lp_wake_ctrl`.
 
     * :attr:`Rate.CYCLE_1_25_HZ`
     * :attr:`Rate.CYCLE_5_HZ`
@@ -341,75 +387,177 @@ class MPU6050:
 
     """
 
-    def __init__(self, i2c_bus: I2C, address) -> None:
-        
-        # Check user input for correctness correctness
-        if address is not _MPU6050_DEVICE_ID_AD0_LO and address is not _MPU6050_DEVICE_ID_AD0_HI:
-            raise RuntimeError("MPU6050 address passed in is incorrect. Expecting "
-                "0x68 OR 0x69 (104 OR 105).  See Data Sheet / Register Map for details")
-        
+    def __init__(self, i2c_bus: I2C, address: int = _MPU6050_DEVICE_ID_AD0_LO) -> None:
+
+        # Check user input
+        self.check_valid_address(address)
+
         # Verify i2c_bus is not already locked to prevent a hang
-        i2c_bus.unlock()            
-         
+        i2c_bus.unlock()
+
         # Attempt to establish an I2CDevice object
         self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
-        
-        # Verify WHO_AM_I (register 0x75) responds with value of 104, regardless of AD0 state.
-        # This double checks the device responding is a MPU6050
-        if self._who_am_i[0][0] is _MPU6050_DEVICE_ID_AD0_LO:
-            print("Communication to MPU6050 @", address, " confirmed.")
-        else:
-            raise RuntimeError("MPU6050 @ ", address, " invalid response from \"Who Am I\" "
-                "(104 0x68) not found. Possible a device, other than MPU6050, responding "
-                "from the same address. Check for I2C address conflicts on the same "
-                "I2C bus and try again.")
-        
-        self.reset()
 
+        # Verify MPU-6050 is responding to I2C traffic
+        self.check_communication(address)
+
+        # Reset to clear any previously stored settings
+        self.device_reset()
+
+        # Configure sensor as desired
         self._sample_rate_divisor = 0
         self._filter_bandwidth = Bandwidth.BAND_260_HZ
         self._gyro_range = GyroRange.RANGE_500_DPS
         self._accel_range = Range.RANGE_2_G
         sleep(0.100)
-        self._clock_source = 1  # set to use gyro x-axis as reference
-        sleep(0.100)
-        self.sleep = False
+        self._clksel = Clksel.CLKSEL_INTERNAL_X  # CTRL-F "Class CLKSEL"
+        sleep(0.500)
+
+        # Take sensor out of sleep to enable output
+        self._sleep = False
         sleep(0.010)
 
-    def reset(self) -> None:
-        """Reinitialize the sensor"""
-        self._reset = True
-        while self._reset is True:
-            sleep(0.001)
-        sleep(0.100)
+    """    ### Non-Property Methods ###    """
 
-        _signal_path_reset = 0b111  # reset all sensors
-        sleep(0.100)
+    def device_reset(self) -> None:
+        """Resets all internal regi's to their default"""
+        """ Automatically clears to 0 """
+        self._device_reset = True
+        while self._device_reset is True:
+            sleep(0.01)
 
-    _clock_source = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
-    _device_id = ROUnaryStruct(_MPU6050_WHO_AM_I, ">B")
+    def temp_path_reset(self):
+        # Resets the temperature sensor signal path
+        # Register values are retained
+        self._temp_reset = True
+        while self._temp_reset is True:
+            sleep(0.01)
 
-    _reset = RWBit(_MPU6050_PWR_MGMT_1, 7, 1)
-    _signal_path_reset = RWBits(3, _MPU6050_SIGNAL_PATH_RESET, 3)
+    def accel_path_reset(self):
+        # Resets the accelerometer sensor signal path
+        # Register values are retained
+        self._accel_reset = True
+        while self._accel_reset is True:
+            sleep(0.01)
 
-    _gyro_range = RWBits(2, _MPU6050_GYRO_CONFIG, 3)
-    _accel_range = RWBits(2, _MPU6050_ACCEL_CONFIG, 3)
+    def gyro_path_reset(self):
+        # Resets the gyroscope sensor signal path
+        # Register values are retained
+        self._temp_reset = True
+        while self._temp_reset is True:
+            sleep(0.01)
 
-    _filter_bandwidth = RWBits(2, _MPU6050_CONFIG, 3)
+    def all_sensor_path_reset(self):
+        # Resets the all sensor signal paths
+        # Register values are retained
+        self.temp_path_reset()
+        self.accel_path_reset()
+        self.gyro_path_reset()
 
+    def all_signal_condtion_reset(self):
+        # Resets ALL sensor signal paths
+        # Register values are NOT retained
+        self._sig_cond_reset = True
+        while self._sig_cond_reset is True:
+            sleep(0.01)
+
+    def check_valid_address(self, address_to_check):
+        # Check user input for correctness correctness
+        if (
+            address_to_check is not _MPU6050_DEVICE_ID_AD0_LO
+            and address_to_check is not _MPU6050_DEVICE_ID_AD0_HI
+        ):
+            raise RuntimeError(
+                "MPU6050 address passed in is incorrect. Expecting "
+                "0x68 OR 0x69 (104 OR 105).  See Data Sheet / Register Map for details"
+            )
+
+    def check_communication(self, address_to_check):
+        # Verify WHO_AM_I (register 0x75) responds with value of 104, regardless of AD0 state.
+        # This double checks the device responding is a MPU6050
+        if self._who_am_i[0][0] is 104:
+            print("Communication to MPU6050 @", address_to_check, " confirmed.")
+        else:
+            raise RuntimeError(
+                "MPU6050 @ ",
+                address_to_check,
+                " invalid response from 'Who Am I' "
+                "(104 0x68) not found. Possible a device, other than MPU6050, responding "
+                "from the same address. Check for I2C address conflicts on the same "
+                "I2C bus and try again.",
+            )
+
+    def low_power_mode_enable(self):
+        self.cycle_mode_enable = True
+        self.sleep = False
+        self.temp_disable = True
+        self.stby_xg = True
+        self.stby_yg = True
+        self.stby_zg = True
+
+    """
+    ### Register Interface Objects ###
+
+        * Listed in numerical order by Register Address, 0-75
+        * Then listed in order of significance, bit 0 - bit 7
+    """
+    _sample_rate_divisor = UnaryStruct(_MPU6050_SMPLRT_DIV, ">B")
+    _dlpf_config = RWBits(3, _MPU6050_CONFIG, 0, 3)
+    _fs_sel = RWBits(2, _MPU6050_GYRO_CONFIG, 3, 2)
+    _afs_sel = RWBits(2, _MPU6050_ACCEL_CONFIG, 3, 2)
+    # _slv0_fifo_en = RWBit(_MPU6050_FIFO_EN, 0)
+    # _slv1_fifo_en = RWBit(_MPU6050_FIFO_EN, 1)
+    # _slv2_fifo_en = RWBit(_MPU6050_FIFO_EN, 2)
+    _accel_fifo_en = RWBit(_MPU6050_FIFO_EN, 3)
+    _zg_fifo_en = RWBit(_MPU6050_FIFO_EN, 4)
+    _yg_fifo_en = RWBit(_MPU6050_FIFO_EN, 5)
+    _xg_fifo_en = RWBit(_MPU6050_FIFO_EN, 6)
+    _temp_fifo_en = RWBit(_MPU6050_FIFO_EN, 7)
+    _i2c_bypass_en = RWBit(_MPU6050_INT_PIN_CFG, 2)
+    _fsync_int_en_ = RWBit(_MPU6050_INT_PIN_CFG, 3)
+    _fsync_int_level = RWBit(_MPU6050_INT_PIN_CFG, 4)
+    _int_rd_clear = RWBit(_MPU6050_INT_PIN_CFG, 5)
+    _int_open = RWBit(_MPU6050_INT_PIN_CFG, 6)
+    _int_level = RWBit(_MPU6050_INT_PIN_CFG, 7)
+    _data_rdy_en = RWBit(_MPU6050_INT_ENABLE, 0)
+    # _i2c_mst_int_en = RWBit(_MPU6050_INT_ENABLE, 3)
+    _fifo_oflow_en = RWBit(_MPU6050_INT_ENABLE, 4)
+    _data_rdy_int = RWBit(_MPU6050_INT_STATUS, 0)
+    # _i2c_mst_int = RWBit(_MPU6050_INT_STATUS, 3)
+    _fifo_oflow_int = RWBit(_MPU6050_INT_STATUS, 4)
     _raw_accel_data = StructArray(_MPU6050_ACCEL_XOUT_H, ">h", 3)
-    _raw_gyro_data = StructArray(_MPU6050_GYRO_XOUT_H, ">h", 3)
     _raw_temp_data = ROUnaryStruct(_MPU6050_TEMP_OUT_H, ">h")
-    
-    _who_am_i = StructArray(_MPU6050_WHO_AM_I,'B',1)
+    _raw_gyro_data = StructArray(_MPU6050_GYRO_XOUT_H, ">h", 3)
+    _temp_reset = RWBit(_MPU6050_SIGNAL_PATH_RESET, 0)
+    _accel_reset = RWBit(_MPU6050_SIGNAL_PATH_RESET, 1)
+    _gyro_reset = RWBit(_MPU6050_SIGNAL_PATH_RESET, 2)
+    _sig_cond_reset = RWBit(_MPU6050_USER_CTRL, 0)
+    # _i2c_mst_reset = RWBit(_MPU6050_USER_CTRL, 1)
+    _fifo_reset = RWBit(_MPU6050_USER_CTRL, 2)
+    # _i2c_mst_en = RWBit(_MPU6050_USER_CTRL, 5)
+    _fifo_en = RWBit(_MPU6050_USER_CTRL, 6)
+    _signal_path_reset = RWBits(
+        3, _MPU6050_SIGNAL_PATH_RESET, 3
+    )  # Remove ?? - make into function
+    _clksel = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
+    _temp_dis = RWBit(_MPU6050_PWR_MGMT_1, 3)
     _cycle = RWBit(_MPU6050_PWR_MGMT_1, 5)
-    _cycle_rate = RWBits(2, _MPU6050_PWR_MGMT_2, 6, 1)
+    _sleep = RWBit(_MPU6050_PWR_MGMT_1, 6)
+    _device_reset = RWBit(_MPU6050_PWR_MGMT_1, 7, 1)
+    _stby_zg = RWBit(_MPU6050_PWR_MGMT_2, 0)
+    _stby_yg = RWBit(_MPU6050_PWR_MGMT_2, 1)
+    _stby_xg = RWBit(_MPU6050_PWR_MGMT_2, 2)
+    _stby_za = RWBit(_MPU6050_PWR_MGMT_2, 3)
+    _stby_ya = RWBit(_MPU6050_PWR_MGMT_2, 4)
+    _stby_xa = RWBit(_MPU6050_PWR_MGMT_2, 5)
+    _lp_wake_control = RWBits(2, _MPU6050_PWR_MGMT_2, 6)
+    _fifo_count = ROUnaryStruct(_MPU6050_FIFO_COUNTH, ">H")
+    _device_id = ROUnaryStruct(_MPU6050_WHO_AM_I, ">B")
+    _who_am_i = StructArray(_MPU6050_WHO_AM_I, "B", 1)
 
-    sleep = RWBit(_MPU6050_PWR_MGMT_1, 6, 1)
-    """Shuts down the accelerometers and gyroscopes, saving power. No new data will
-    be recorded until the sensor is taken out of sleep by setting to `False`"""
-    sample_rate_divisor = UnaryStruct(_MPU6050_SMPLRT_DIV, ">B")
-    """The sample rate divisor. See the datasheet for additional detail"""
+    """
+    ### Property Methods ###
+    """
 
     @property
     def temperature(self) -> float:
@@ -426,7 +574,7 @@ class MPU6050:
         raw_y = raw_data[1][0]
         raw_z = raw_data[2][0]
 
-        accel_range = self._accel_range
+        accel_range = self._afs_sel
         accel_scale = 1
         if accel_range == Range.RANGE_16_G:
             accel_scale = 2048
@@ -453,7 +601,7 @@ class MPU6050:
         raw_z = raw_data[2][0]
 
         gyro_scale = 1
-        gyro_range = self._gyro_range
+        gyro_range = self._fs_sel
         if gyro_range == GyroRange.RANGE_250_DPS:
             gyro_scale = 131
         if gyro_range == GyroRange.RANGE_500_DPS:
@@ -471,60 +619,206 @@ class MPU6050:
         return (gyro_x, gyro_y, gyro_z)
 
     @property
-    def cycle(self) -> bool:
+    def cycle_mode_enable(self) -> bool:
         """Enable or disable periodic measurement at a rate set by :meth:`cycle_rate`.
         If the sensor was in sleep mode, it will be waken up to cycle"""
         return self._cycle
 
-    @cycle.setter
-    def cycle(self, value: bool) -> None:
-        self.sleep = not value
-        self._cycle = value
+    @cycle_mode_enable.setter
+    def cycle_mode_enable(self, value: bool) -> None:
+        self._cycle = int(value)
+
+    @property
+    def device_sleep(self) -> bool:
+        """Enable / Disable Sleep bit"""
+        return self._sleep
+
+    @device_sleep.setter
+    def device_sleep(self, value: bool) -> None:
+        self._sleep = int(value)
+
+    @property
+    def temp_disable(self) -> bool:
+        """Enable / Disable temperature sensor path"""
+        return self._temp_dis
+
+    @temp_disable.setter
+    def temp_disable(self, value: bool) -> None:
+        self._temp_dis = int(value)
+
+    @property
+    def stby_zg(self) -> bool:
+        """Standby for Z gyro"""
+        return self._stby_zg
+
+    @stby_zg.setter
+    def stby_zg(self, value: bool) -> None:
+        self._stby_zg = int(value)
+
+    @property
+    def stby_yg(self) -> bool:
+        """Standby for Y gyro"""
+        return self._stby_yg
+
+    @stby_yg.setter
+    def stby_yg(self, value: bool) -> None:
+        self._stby_yg = int(value)
+
+    @property
+    def stby_xg(self) -> bool:
+        """Standby for X gyro"""
+        return self._stby_xg
+
+    @stby_xg.setter
+    def stby_xg(self, value: bool) -> None:
+        self._stby_xg = int(value)
+
+    @property
+    def stby_za(self) -> bool:
+        """Standby for Z Accelerometer"""
+        return self._stby_za
+
+    @stby_za.setter
+    def stby_za(self, value: bool) -> None:
+        self._stby_za = int(value)
+
+    @property
+    def stby_ya(self) -> bool:
+        """Standby for Y Accelerometer"""
+        return self._stby_ya
+
+    @stby_ya.setter
+    def stby_ya(self, value: bool) -> None:
+        self._stby_ya = int(value)
+
+    @property
+    def stby_xa(self) -> bool:
+        """Standby for X Accelerometer"""
+        return self._stby_xa
+
+    @stby_xa.setter
+    def stby_xa(self, value: bool) -> None:
+        self._stby_xa = int(value)
 
     @property
     def gyro_range(self) -> int:
         """The measurement range of all gyroscope axes. Must be a `GyroRange`"""
-        return self._gyro_range
+        return self._fs_sel
 
     @gyro_range.setter
     def gyro_range(self, value: int) -> None:
         if (value < 0) or (value > 3):
             raise ValueError("gyro_range must be a GyroRange")
-        self._gyro_range = value
+        self._fs_sel = value
         sleep(0.01)
 
     @property
     def accelerometer_range(self) -> int:
         """The measurement range of all accelerometer axes. Must be a `Range`"""
-        return self._accel_range
+        return self._afs_sel
 
     @accelerometer_range.setter
     def accelerometer_range(self, value: int) -> None:
         if (value < 0) or (value > 3):
             raise ValueError("accelerometer_range must be a Range")
-        self._accel_range = value
+        self._afs_sel = value
         sleep(0.01)
 
     @property
     def filter_bandwidth(self) -> int:
         """The bandwidth of the gyroscope Digital Low Pass Filter. Must be a `GyroRange`"""
-        return self._filter_bandwidth
+        return self._dlpf_config
 
     @filter_bandwidth.setter
     def filter_bandwidth(self, value: int) -> None:
         if (value < 0) or (value > 6):
             raise ValueError("filter_bandwidth must be a Bandwidth")
-        self._filter_bandwidth = value
+        self._dlpf_config = value
         sleep(0.01)
 
     @property
     def cycle_rate(self) -> int:
         """The rate that measurements are taken while in `cycle` mode. Must be a `Rate`"""
-        return self._cycle_rate
+        return self._lp_wake_control
 
     @cycle_rate.setter
     def cycle_rate(self, value: int) -> None:
         if (value < 0) or (value > 3):
             raise ValueError("cycle_rate must be a Rate")
-        self._cycle_rate = value
+        self._lp_wake_control = value
         sleep(0.01)
+
+    @property
+    def ext_sync_set(self) -> int:
+        return self._ext_sync_set
+
+    @ext_sync_set.setter
+    def ext_sync_set(self, value: int) -> None:
+        if (value < 0) or (value > 7):
+            raise ValueError("setting must be Ext_Sync_Set")
+        self._ext_sync_set = value
+
+    @property
+    def clksel(self) -> int:
+        return self._clksel
+
+    @clksel.setter
+    def clksel(self, value: int) -> None:
+        if (value < 0) or (value > 7):
+            raise ValueError("setting must be Clksel")
+        self._clksel = value
+
+    @property
+    def bytes_inFIFO(self) -> int:
+        """Returns number of bytes in the FIFO Buffer"""
+        return self._fifo_count
+
+    @property
+    def FIFO_enable(self) -> bool:
+        """Flips FIFO Enable bit"""
+        return self._fifo_en
+
+    @FIFO_enable.setter
+    def FIFO_enable(self, value: bool) -> None:
+        self._fifo_en = int(value)
+
+    @property
+    def FIFO_reset(self) -> bool:
+        """Flips FIFO Enable bit"""
+        return self._fifo_reset
+
+    @FIFO_reset.setter
+    def FIFO_reset(self, value: bool) -> None:
+        self._fifo_reset = int(value)
+
+    @property
+    def FIFO_xg_enable(self) -> bool:
+        return self._xg_fifo_en
+
+    @FIFO_xg_enable.setter
+    def FIFO_xg_enable(self, value: bool) -> None:
+        self._xg_fifo_en = int(value)
+
+    @property
+    def FIFO_yg_enable(self) -> bool:
+        return self._yg_fifo_en
+
+    @FIFO_yg_enable.setter
+    def FIFO_yg_enable(self, value: bool) -> None:
+        self._yg_fifo_en = int(value)
+
+    @property
+    def FIFO_zg_enable(self) -> bool:
+        return self._zg_fifo_en
+
+    @FIFO_zg_enable.setter
+    def FIFO_zg_enable(self, value: bool) -> None:
+        self._zg_fifo_en = int(value)
+
+    @property
+    def FIFO_accel_enable(self) -> bool:
+        return self._accel_fifo_en
+
+    @FIFO_accel_enable.setter
+    def FIFO_accel_enable(self, value: bool) -> None:
+        self._accel_fifo_en = int(value)
