@@ -261,7 +261,7 @@ class Clksel:  # pylint: disable=too-few-public-methods
 
 
 class Ext_Sync_Set:  # pylint: disable=too-few-public-methods
-    """Allowed values for `_ext_sync_set` Register object.
+    """Allowed values for `ext_sync_set` Register object.
 
     * :attr:'Ext_Sync_Set.DISABLED
     * :attr:'Ext_Sync_Set.TEMP_OUT_L
@@ -338,7 +338,7 @@ class Bandwidth:  # pylint: disable=too-few-public-methods
 
 
 class Rate:  # pylint: disable=too-few-public-methods
-    """Allowed values for `_lp_wake_ctrl`.
+    """Allowed values for `lp_wake_ctrl`.
 
     * :attr:`Rate.CYCLE_1_25_HZ`
     * :attr:`Rate.CYCLE_5_HZ`
