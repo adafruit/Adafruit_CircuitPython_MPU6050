@@ -353,6 +353,8 @@ class Rate:  # pylint: disable=too-few-public-methods
     CYCLE_40_HZ = 3  # 40 Hz
 
 
+# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-public-methods
 class MPU6050:
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
@@ -405,64 +407,62 @@ class MPU6050:
         self.device_reset()
 
         # Configure sensor as desired
-        self._sample_rate_divisor = 0
-        self._filter_bandwidth = Bandwidth.BAND_260_HZ
-        self._gyro_range = GyroRange.RANGE_500_DPS
-        self._accel_range = Range.RANGE_2_G
+        self.sample_rate = 0
+        self.filter_bandwidth = Bandwidth.BAND_260_HZ
+        self.gyro_range = GyroRange.RANGE_500_DPS
+        self.accelerometer_range = Range.RANGE_2_G
         sleep(0.100)
-        self._clksel = Clksel.CLKSEL_INTERNAL_X  # CTRL-F "Class CLKSEL"
+        self.clock_source = Clksel.CLKSEL_INTERNAL_X  # CTRL-F "Class CLKSEL"
         sleep(0.500)
 
         # Take sensor out of sleep to enable output
-        self._sleep = False
-        sleep(0.010)
-
-    """    ### Non-Property Methods ###    """
+        self.sleep = False
 
     def device_reset(self) -> None:
-        """Resets all internal regi's to their default"""
-        """ Automatically clears to 0 """
+        """Resets all internal regi's to their default
+        Automatically clears to 0"""
         self._device_reset = True
         while self._device_reset is True:
             sleep(0.01)
 
     def temp_path_reset(self):
-        # Resets the temperature sensor signal path
-        # Register values are retained
+        """Resets the temperature sensor signal path
+        Register values are retained"""
         self._temp_reset = True
         while self._temp_reset is True:
             sleep(0.01)
 
     def accel_path_reset(self):
-        # Resets the accelerometer sensor signal path
-        # Register values are retained
+        """Resets the accelerometer sensor signal path
+        Register values are retained"""
         self._accel_reset = True
         while self._accel_reset is True:
             sleep(0.01)
 
     def gyro_path_reset(self):
-        # Resets the gyroscope sensor signal path
-        # Register values are retained
+        """Resets the gyroscope sensor signal path
+        Register values are retained"""
         self._temp_reset = True
         while self._temp_reset is True:
             sleep(0.01)
 
     def all_sensor_path_reset(self):
-        # Resets the all sensor signal paths
-        # Register values are retained
+        """Resets the all sensor signal paths
+        Register values are retained"""
         self.temp_path_reset()
         self.accel_path_reset()
         self.gyro_path_reset()
 
     def all_signal_condtion_reset(self):
-        # Resets ALL sensor signal paths
-        # Register values are NOT retained
+        """Resets ALL sensor signal paths
+        Register values are NOT retained"""
         self._sig_cond_reset = True
-        while self._sig_cond_reset is True:
+        while self._temp_reset is True:
             sleep(0.01)
 
+    # pylint: disable=no-self-use
     def check_valid_address(self, address_to_check):
-        # Check user input for correctness correctness
+        """Check user input for correctness correctness"""
         if (
             address_to_check is not _MPU6050_DEVICE_ID_AD0_LO
             and address_to_check is not _MPU6050_DEVICE_ID_AD0_HI
@@ -473,9 +473,9 @@ class MPU6050:
             )
 
     def check_communication(self, address_to_check):
-        # Verify WHO_AM_I (register 0x75) responds with value of 104, regardless of AD0 state.
-        # This double checks the device responding is a MPU6050
-        if self._who_am_i[0][0] is 104:
+        """Verify WHO_AM_I (register 0x75) responds with value of 104, regardless of AD0 state.
+        This double checks the device responding is a MPU6050"""
+        if self.whoami is _MPU6050_DEVICE_ID_AD0_LO:
             print("Communication to MPU6050 @", address_to_check, " confirmed.")
         else:
             raise RuntimeError(
@@ -487,21 +487,17 @@ class MPU6050:
                 "I2C bus and try again.",
             )
 
-    def low_power_mode_enable(self):
-        self.cycle_mode_enable = True
+    def low_power_mode_enable(self, rate=Rate.CYCLE_40_HZ):
+        """Places MPU6050 into low power mode."""
+        self.cycle_rate = rate
+        self.cycle_mode = True
         self.sleep = False
         self.temp_disable = True
         self.stby_xg = True
         self.stby_yg = True
         self.stby_zg = True
 
-    """
-    ### Register Interface Objects ###
-
-        * Listed in numerical order by Register Address, 0-75
-        * Then listed in order of significance, bit 0 - bit 7
-    """
-    _sample_rate_divisor = UnaryStruct(_MPU6050_SMPLRT_DIV, ">B")
+    _smplrt_div = UnaryStruct(_MPU6050_SMPLRT_DIV, ">B")
     _dlpf_config = RWBits(3, _MPU6050_CONFIG, 0, 3)
     _fs_sel = RWBits(2, _MPU6050_GYRO_CONFIG, 3, 2)
     _afs_sel = RWBits(2, _MPU6050_ACCEL_CONFIG, 3, 2)
@@ -550,14 +546,10 @@ class MPU6050:
     _stby_za = RWBit(_MPU6050_PWR_MGMT_2, 3)
     _stby_ya = RWBit(_MPU6050_PWR_MGMT_2, 4)
     _stby_xa = RWBit(_MPU6050_PWR_MGMT_2, 5)
-    _lp_wake_control = RWBits(2, _MPU6050_PWR_MGMT_2, 6)
+    _lp_wake_ctrl = RWBits(2, _MPU6050_PWR_MGMT_2, 6)
     _fifo_count = ROUnaryStruct(_MPU6050_FIFO_COUNTH, ">H")
     _device_id = ROUnaryStruct(_MPU6050_WHO_AM_I, ">B")
     _who_am_i = StructArray(_MPU6050_WHO_AM_I, "B", 1)
-
-    """
-    ### Property Methods ###
-    """
 
     @property
     def temperature(self) -> float:
@@ -619,94 +611,162 @@ class MPU6050:
         return (gyro_x, gyro_y, gyro_z)
 
     @property
-    def cycle_mode_enable(self) -> bool:
-        """Enable or disable periodic measurement at a rate set by :meth:`cycle_rate`.
-        If the sensor was in sleep mode, it will be waken up to cycle"""
+    def cycle_mode(self) -> bool:
+        """Returns state of _cycle"""
         return self._cycle
 
-    @cycle_mode_enable.setter
-    def cycle_mode_enable(self, value: bool) -> None:
+    @cycle_mode.setter
+    def cycle_mode(self, value: bool) -> None:
+        """Sets state of _cycle, Reg Map Pg 40"""
         self._cycle = int(value)
 
     @property
     def device_sleep(self) -> bool:
-        """Enable / Disable Sleep bit"""
+        """Returns state of _sleep, Reg Map Pg 40"""
         return self._sleep
 
     @device_sleep.setter
     def device_sleep(self, value: bool) -> None:
+        """Sets state of _sleep, Reg Map Pg 40"""
         self._sleep = int(value)
 
     @property
     def temp_disable(self) -> bool:
-        """Enable / Disable temperature sensor path"""
+        """Returns state of _temp_dis, Reg Map Pg 40"""
         return self._temp_dis
 
     @temp_disable.setter
     def temp_disable(self, value: bool) -> None:
+        """Sets state of _temp_dis, Reg Map Pg 40"""
         self._temp_dis = int(value)
 
     @property
     def stby_zg(self) -> bool:
-        """Standby for Z gyro"""
+        """Returns _stby_zg state, Reg Map Pg 42"""
         return self._stby_zg
 
     @stby_zg.setter
     def stby_zg(self, value: bool) -> None:
+        """Sets state of _stby_zg, Reg Map Pg 42"""
         self._stby_zg = int(value)
 
     @property
     def stby_yg(self) -> bool:
-        """Standby for Y gyro"""
+        """Returns _stby_yg state, Reg Map Pg 42"""
         return self._stby_yg
 
     @stby_yg.setter
     def stby_yg(self, value: bool) -> None:
+        """Sets state of _stby_yg, Reg Map Pg 42"""
         self._stby_yg = int(value)
 
     @property
     def stby_xg(self) -> bool:
-        """Standby for X gyro"""
+        """Returns _stby_xg state, Reg Map Pg 42"""
         return self._stby_xg
 
     @stby_xg.setter
     def stby_xg(self, value: bool) -> None:
+        """Sets state of _stby_xg, Reg Map Pg 42"""
         self._stby_xg = int(value)
 
     @property
     def stby_za(self) -> bool:
-        """Standby for Z Accelerometer"""
+        """Returns _stby_ya state, Reg Map Pg 42"""
         return self._stby_za
 
     @stby_za.setter
     def stby_za(self, value: bool) -> None:
+        """Sets state of _stby_za, Reg Map Pg 42"""
         self._stby_za = int(value)
 
     @property
     def stby_ya(self) -> bool:
-        """Standby for Y Accelerometer"""
+        """Returns _stby_ya state, Reg Map Pg 42"""
         return self._stby_ya
 
     @stby_ya.setter
     def stby_ya(self, value: bool) -> None:
+        # Sets state of _stby_ya, Reg Map Pg 42
         self._stby_ya = int(value)
 
     @property
     def stby_xa(self) -> bool:
-        """Standby for X Accelerometer"""
+        """Returns _stby_xa state, Reg Map Pg 42"""
         return self._stby_xa
 
     @stby_xa.setter
     def stby_xa(self, value: bool) -> None:
+        """Sets state of _stby_xa, Reg Map Pg 42"""
         self._stby_xa = int(value)
 
     @property
+    def sample_rate(self) -> int:
+        """Returns _sample_rate_divisor, Reg Map Pg 11"""
+        return self._smplrt_div
+
+    @sample_rate.setter
+    def sample_rate(self, value: int) -> None:
+        """Sets sample_rate, Reg Map Pg 11
+        *
+        * Sets/Gets Gyroscope Sample Rate
+        *
+        * Equation shown as (Reg Map Pg 11):
+        *        * Gyro Sample Rate = Gyro Output Rate / (1 + Smplrt_div)
+        *
+        * Solve for Smplrt_div:
+        *        * Smplrt_div = (Gyro Output Rate / Gyro Sample Rate) - 1
+        *
+        * = Notes =
+        * 1. Gyro Output Rate = 8 kHz, when dlpf_cfg = 0 or 7
+        * 2. Gyro Output Rate = 1 kHz, when dlpf_cfg = 1 thru 6
+        * 3. dlpf_cfg set via 'MPU6050.filter_bandwidth = X' property
+        * 4. 31.4 samples/sec bit resolution @ 8 kHz Gyro_Output
+        * 5.  3.9 samples/sec bit resolution @ 1 kHz Gyro_Output
+        *
+        * = Sample Rate Example =
+        *     - Desired sample Rate = 100
+        *     - dlpf_cfg = 0
+        *         -Gyro Output Rate 8 kHz (See note 1, above)
+        *
+        *     Smplrt_div = (8000 / 100) - 1
+        *     Smplrt_div = 80 - 1
+        *     Smplrt_div = 79
+        *
+        *     Unsigned Integer 79 is written to _smplrt_div
+        *"""
+
+        # Check entry for positive validity
+        if value <= 0:
+            raise ValueError("sample_rate must be an integer greater than 0")
+
+        # Check rates are possible with 0 - 255 bit resolution
+        if (
+            self.filter_bandwidth is Bandwidth.BAND_260_HZ
+            or self.filter_bandwidth is Bandwidth.BAND_5_HZ
+        ) and (value <= 31 or value >= 8001):
+            raise ValueError("sample_rate must be greater than 31 and less than 8001")
+        if value <= 3 or value >= 1001:
+            raise ValueError("sample_rate must be greater than 3 and less than 1001")
+
+        # Instantiate gyro_output
+        gyro_output = 0
+
+        if self.filter_bandwidth in (0, 7):
+            gyro_output = 8000
+        else:
+            gyro_output = 1000
+
+        self._smplrt_div = int((gyro_output / value) - 1)
+
+    @property
     def gyro_range(self) -> int:
-        """The measurement range of all gyroscope axes. Must be a `GyroRange`"""
+        """Returns _fs_sel, Reg Map Pg 14"""
         return self._fs_sel
 
     @gyro_range.setter
     def gyro_range(self, value: int) -> None:
+        """Sets _fs_sel, Reg Map Pg 14"""
         if (value < 0) or (value > 3):
             raise ValueError("gyro_range must be a GyroRange")
         self._fs_sel = value
@@ -714,11 +774,12 @@ class MPU6050:
 
     @property
     def accelerometer_range(self) -> int:
-        """The measurement range of all accelerometer axes. Must be a `Range`"""
+        """Returns _afs_sel, Reg Map Pg 15"""
         return self._afs_sel
 
     @accelerometer_range.setter
     def accelerometer_range(self, value: int) -> None:
+        """Sets _afs_sel, Reg Map Pg 15"""
         if (value < 0) or (value > 3):
             raise ValueError("accelerometer_range must be a Range")
         self._afs_sel = value
@@ -726,11 +787,12 @@ class MPU6050:
 
     @property
     def filter_bandwidth(self) -> int:
-        """The bandwidth of the gyroscope Digital Low Pass Filter. Must be a `GyroRange`"""
+        """Returns _dlpf_config, Reg Map 13"""
         return self._dlpf_config
 
     @filter_bandwidth.setter
     def filter_bandwidth(self, value: int) -> None:
+        """Sets lp_wake_ctrl, Reg Map 13"""
         if (value < 0) or (value > 6):
             raise ValueError("filter_bandwidth must be a Bandwidth")
         self._dlpf_config = value
@@ -738,87 +800,106 @@ class MPU6050:
 
     @property
     def cycle_rate(self) -> int:
-        """The rate that measurements are taken while in `cycle` mode. Must be a `Rate`"""
-        return self._lp_wake_control
+        """Returns lp_wake_ctrl, Reg Map 42"""
+        return self._lp_wake_ctrl
 
     @cycle_rate.setter
     def cycle_rate(self, value: int) -> None:
+        """Sets lp_wake_ctrl, Reg Map 42"""
         if (value < 0) or (value > 3):
             raise ValueError("cycle_rate must be a Rate")
-        self._lp_wake_control = value
-        sleep(0.01)
+        self._lp_wake_ctrl = value
 
     @property
     def ext_sync_set(self) -> int:
+        """Returns ext_sync_set value, Reg Map Pg 13"""
         return self._ext_sync_set
 
     @ext_sync_set.setter
     def ext_sync_set(self, value: int) -> None:
+        """Sets ext_sync_set, Reg Map Pg 13"""
         if (value < 0) or (value > 7):
             raise ValueError("setting must be Ext_Sync_Set")
         self._ext_sync_set = value
 
     @property
-    def clksel(self) -> int:
+    def clock_source(self) -> int:
+        """Returns current CLKSEL value, Reg Map Pg 40"""
         return self._clksel
 
-    @clksel.setter
-    def clksel(self, value: int) -> None:
+    @clock_source.setter
+    def clock_source(self, value: int) -> None:
+        """Sets CLKSEL value, Reg Map Pg 40"""
         if (value < 0) or (value > 7):
             raise ValueError("setting must be Clksel")
         self._clksel = value
 
     @property
-    def bytes_inFIFO(self) -> int:
-        """Returns number of bytes in the FIFO Buffer"""
+    def bytes_infifo(self) -> int:
+        """Returns value in _fifo_count"""
         return self._fifo_count
 
     @property
-    def FIFO_enable(self) -> bool:
-        """Flips FIFO Enable bit"""
+    def whoami(self) -> int:
+        """Returns _who_am_i"""
+        return self._who_am_i[0][0]
+
+    @property
+    def fifo_enable(self) -> bool:
+        """Returns FIFO output status"""
         return self._fifo_en
 
-    @FIFO_enable.setter
-    def FIFO_enable(self, value: bool) -> None:
+    @fifo_enable.setter
+    def fifo_enable(self, value: bool) -> None:
+        """enables/disable fifo output"""
         self._fifo_en = int(value)
 
     @property
-    def FIFO_reset(self) -> bool:
-        """Flips FIFO Enable bit"""
+    def fifo_reset(self) -> bool:
+        """Returns state of bit"""
         return self._fifo_reset
 
-    @FIFO_reset.setter
-    def FIFO_reset(self, value: bool) -> None:
+    @fifo_reset.setter
+    def fifo_reset(self, value: bool) -> None:
+        """Set True to reset FIFO"""
         self._fifo_reset = int(value)
 
     @property
-    def FIFO_xg_enable(self) -> bool:
+    def fifo_xg(self) -> bool:
+        """Returns state of bit"""
         return self._xg_fifo_en
 
-    @FIFO_xg_enable.setter
-    def FIFO_xg_enable(self, value: bool) -> None:
+    @fifo_xg.setter
+    def fifo_xg(self, value: bool) -> None:
+        """Set True to have X-Axis gyro reading in FIFO"""
         self._xg_fifo_en = int(value)
 
     @property
-    def FIFO_yg_enable(self) -> bool:
+    def fifo_yg(self) -> bool:
+        """Returns state of bit"""
         return self._yg_fifo_en
 
-    @FIFO_yg_enable.setter
-    def FIFO_yg_enable(self, value: bool) -> None:
+    @fifo_yg.setter
+    def fifo_yg(self, value: bool) -> None:
+        #  Set True to have Y-Axis gyro reading in FIFO
         self._yg_fifo_en = int(value)
 
     @property
-    def FIFO_zg_enable(self) -> bool:
+    def fifo_zg(self) -> bool:
+        """Returns state of bit"""
         return self._zg_fifo_en
 
-    @FIFO_zg_enable.setter
-    def FIFO_zg_enable(self, value: bool) -> None:
+    @fifo_zg.setter
+    def fifo_zg(self, value: bool) -> None:
+        """Set True to have Z-Axis gyro reading in FIFO"""
         self._zg_fifo_en = int(value)
 
     @property
-    def FIFO_accel_enable(self) -> bool:
+    def fifo_accel(self) -> bool:
+        """Returns state of bit"""
         return self._accel_fifo_en
 
-    @FIFO_accel_enable.setter
-    def FIFO_accel_enable(self, value: bool) -> None:
+    @fifo_accel.setter
+    def fifo_accel(self, value: bool) -> None:
+        """Set True to have accelerometers readings in FIFO"""
         self._accel_fifo_en = int(value)
