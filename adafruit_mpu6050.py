@@ -238,7 +238,7 @@ STANDARD_GRAVITY = 9.80665
 
 
 class Clksel:  # pylint: disable=too-few-public-methods
-    """Allowed values for `_clksel` Register object.
+    """Allowed values for `clock_source` Register object.
 
     * :attr:'Clksel.CLKSEL_INTERNAL_8MHz
     * :attr:'Clksel.CLKSEL_INTERNAL_X
