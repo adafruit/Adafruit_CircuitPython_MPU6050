@@ -78,14 +78,14 @@ STANDARD_GRAVITY = 9.80665
 class Clksel:  # pylint: disable=too-few-public-methods
     """Allowed values for py:attr:`clock_source`. 
 
-    * :attr:'Clksel.CLKSEL_INTERNAL_8MHz
-    * :attr:'Clksel.CLKSEL_INTERNAL_X
-    * :attr:'Clksel.CLKSEL_INTERNAL_Y
-    * :attr:'Clksel.CLKSEL_INTERNAL_Z
-    * :attr:'Clksel.CLKSEL_EXTERNAL_32
-    * :attr:'Clksel.CLKSEL_EXTERNAL_19
-    * :attr:'Clksel.CLKSEL_RESERVED
-    * :attr:'Clksel.CLKSEL_STOP
+    * py:attr:'Clksel.CLKSEL_INTERNAL_8MHz
+    * py:attr:'Clksel.CLKSEL_INTERNAL_X
+    * py:attr:'Clksel.CLKSEL_INTERNAL_Y
+    * py:attr:'Clksel.CLKSEL_INTERNAL_Z
+    * py:attr:'Clksel.CLKSEL_EXTERNAL_32
+    * py:attr:'Clksel.CLKSEL_EXTERNAL_19
+    * py:attr:'Clksel.CLKSEL_RESERVED
+    * py:attr:'Clksel.CLKSEL_STOP
     """
 
     CLKSEL_INTERNAL_8MHz = 0  # Internal 8MHz oscillator
@@ -99,12 +99,12 @@ class Clksel:  # pylint: disable=too-few-public-methods
 
 
 class Range:  # pylint: disable=too-few-public-methods
-    """Allowed values for `accelerometer_range`.
+    """Allowed values for py:attr:`accelerometer_range`.
 
-    * :attr:`Range.RANGE_2_G`
-    * :attr:`Range.RANGE_4_G`
-    * :attr:`Range.RANGE_8_G`
-    * :attr:`Range.RANGE_16_G`
+    * py:attr:`Range.RANGE_2_G`
+    * py:attr:`Range.RANGE_4_G`
+    * py:attr:`Range.RANGE_8_G`
+    * py:attr:`Range.RANGE_16_G`
 
     """
 
@@ -115,12 +115,12 @@ class Range:  # pylint: disable=too-few-public-methods
 
 
 class GyroRange:  # pylint: disable=too-few-public-methods
-    """Allowed values for `gyro_range`.
+    """Allowed values for py:attr:`gyro_range`.
 
-    * :attr:`GyroRange.RANGE_250_DPS`
-    * :attr:`GyroRange.RANGE_500_DPS`
-    * :attr:`GyroRange.RANGE_1000_DPS`
-    * :attr:`GyroRange.RANGE_2000_DPS`
+    * py:attr:`GyroRange.RANGE_250_DPS`
+    * py:attr:`GyroRange.RANGE_500_DPS`
+    * py:attr:`GyroRange.RANGE_1000_DPS`
+    * py:attr:`GyroRange.RANGE_2000_DPS`
 
     """
 
@@ -131,15 +131,15 @@ class GyroRange:  # pylint: disable=too-few-public-methods
 
 
 class Bandwidth:  # pylint: disable=too-few-public-methods
-    """Allowed values for `filter_bandwidth`.
+    """Allowed values for py:attr:`filter_bandwidth`.
 
-    * :attr:`Bandwidth.BAND_260_HZ`
-    * :attr:`Bandwidth.BAND_184_HZ`
-    * :attr:`Bandwidth.BAND_94_HZ`
-    * :attr:`Bandwidth.BAND_44_HZ`
-    * :attr:`Bandwidth.BAND_21_HZ`
-    * :attr:`Bandwidth.BAND_10_HZ`
-    * :attr:`Bandwidth.BAND_5_HZ`
+    * py:attr:`Bandwidth.BAND_260_HZ`
+    * py:attr:`Bandwidth.BAND_184_HZ`
+    * py:attr:`Bandwidth.BAND_94_HZ`
+    * py:attr:`Bandwidth.BAND_44_HZ`
+    * py:attr:`Bandwidth.BAND_21_HZ`
+    * py:attr:`Bandwidth.BAND_10_HZ`
+    * py:attr:`Bandwidth.BAND_5_HZ`
 
     """
 
@@ -153,12 +153,12 @@ class Bandwidth:  # pylint: disable=too-few-public-methods
 
 
 class Rate:  # pylint: disable=too-few-public-methods
-    """Allowed values for `cycle_rate`.
+    """Allowed values for py:attr:`cycle_rate`.
 
-    * :attr:`Rate.CYCLE_1_25_HZ`
-    * :attr:`Rate.CYCLE_5_HZ`
-    * :attr:`Rate.CYCLE_20_HZ`
-    * :attr:`Rate.CYCLE_40_HZ`
+    * py:attr:`Rate.CYCLE_1_25_HZ`
+    * py:attr:`Rate.CYCLE_5_HZ`
+    * py:attr:`Rate.CYCLE_20_HZ`
+    * py:attr:`Rate.CYCLE_40_HZ`
 
     """
 
