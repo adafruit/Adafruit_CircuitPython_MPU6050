@@ -203,47 +203,6 @@ class MPU6050:
             acc_x, acc_y, acc_z = sensor.acceleration
             gyro_x, gyro_y, gyro_z = sensor.gyro
             temperature = sensor.temperature
-
-    === Test Script ===
-    # What I used to get everything going
-    #import busio
-    #i2c =  busio.I2C(scl=board.A1, sda=board.A0)
-    #imu = MPU6050(i2c, 0x69)
-
-    # What I presume testers will use
-    import board
-    i2c = board.I2C()
-    imu = (i2c)
-
-
-    # Test Class value assignments
-    print("Test of Class assigments")
-    imu.clock_source = Clksel.CLKSEL_INTERNAL_8MHz
-    print("Clock source is: ", imu.clock_source)
-    imu.clock_source = Clksel.CLKSEL_INTERNAL_X
-    print("Clock source is: ", imu.clock_source)
-    imu.clock_source = Clksel.CLKSEL_INTERNAL_Y
-    print("Clock source is: ", imu.clock_source)
-    imu.clock_source = Clksel.CLKSEL_INTERNAL_Z
-    print("Clock source is: ", imu.clock_source)
-    imu.clock_source = Clksel.CLKSEL_EXTERNAL_32
-    print("Clock source is: ", imu.clock_source)
-    imu.clock_source =  Clksel.CLKSEL_EXTERNAL_19
-    print("Clock source is: ", imu.clock_source)
-    imu.clock_source = Clksel.CLKSEL_RESERVED
-    print("Clock source is: ", imu.clock_source)
-    imu.clock_source = Clksel.CLKSEL_STOP
-    print("Clock source is: ", imu.clock_source)
-
-    # Test integer Assignments
-    print("Test Integer assignments")
-    for x in range(0,8):
-        imu.clock_source=x
-        print("Clock source is: ", imu.clock_source)
-
-    # Produce an error - comment out as needed
-    imu.clock_source = -1
-    imu.clock_source = 8
     """
 
     def __init__(self, i2c_bus: I2C, address: int = _MPU6050_DEFAULT_ADDRESS) -> None:
