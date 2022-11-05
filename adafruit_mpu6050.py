@@ -76,7 +76,7 @@ STANDARD_GRAVITY = 9.80665
 
 
 class Clksel:  # pylint: disable=too-few-public-methods
-    """Allowed values for `clock_source` 
+    """Allowed values for py:attr:`clock_source`. 
 
     * :attr:'Clksel.CLKSEL_INTERNAL_8MHz
     * :attr:'Clksel.CLKSEL_INTERNAL_X
