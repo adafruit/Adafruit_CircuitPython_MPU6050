@@ -75,17 +75,17 @@ _MPU6050_WHO_AM_I = 0x75  # Divice ID register
 STANDARD_GRAVITY = 9.80665
 
 
-class Clksel:  # pylint: disable=too-few-public-methods
+class CLockSource:  # pylint: disable=too-few-public-methods
     """Allowed values for :py:attr:`clock_source`.
 
-    * :py:attr:'Clksel.CLKSEL_INTERNAL_8MHz
-    * :py:attr:'Clksel.CLKSEL_INTERNAL_X
-    * :py:attr:'Clksel.CLKSEL_INTERNAL_Y
-    * :py:attr:'Clksel.CLKSEL_INTERNAL_Z
-    * :py:attr:'Clksel.CLKSEL_EXTERNAL_32
-    * :py:attr:'Clksel.CLKSEL_EXTERNAL_19
-    * :py:attr:'Clksel.CLKSEL_RESERVED
-    * :py:attr:'Clksel.CLKSEL_STOP
+    * :py:attr:'CLockSource.CLKSEL_INTERNAL_8MHz
+    * :py:attr:'CLockSource.CLKSEL_INTERNAL_X
+    * :py:attr:'CLockSource.CLKSEL_INTERNAL_Y
+    * :py:attr:'CLockSource.CLKSEL_INTERNAL_Z
+    * :py:attr:'CLockSource.CLKSEL_EXTERNAL_32
+    * :py:attr:'CLockSource.CLKSEL_EXTERNAL_19
+    * :py:attr:'CLockSource.CLKSEL_RESERVED
+    * :py:attr:'CLockSource.CLKSEL_STOP
     """
 
     CLKSEL_INTERNAL_8MHz = 0  # Internal 8MHz oscillator
@@ -215,7 +215,7 @@ class MPU6050:
         self._accel_range = Range.RANGE_2_G
         sleep(0.100)
         self.clock_source = (
-            Clksel.CLKSEL_INTERNAL_X
+            CLockSource.CLKSEL_INTERNAL_X
         )  # set to use gyro x-axis as reference
         sleep(0.100)
         self.sleep = False
@@ -375,12 +375,14 @@ class MPU6050:
 
     @property
     def clock_source(self) -> int:
-        """Returns current CLKSEL value, Reg Map Pg 40"""
+        """Returns current CLockSource value, Reg Map Pg 40"""
         return self._clksel
 
     @clock_source.setter
     def clock_source(self, value: int) -> None:
         """Sets CLKSEL value, Reg Map Pg 40"""
         if (value < 0) or (value > 7):
-            raise ValueError("clock_source must be Clksel value, integer from 0 - 7.")
+            raise ValueError(
+                "clock_source must be CLockSource value, integer from 0 - 7."
+            )
         self._clksel = value
