@@ -375,12 +375,12 @@ class MPU6050:
 
     @property
     def clock_source(self) -> int:
-        """Returns current CLockSource value, Reg Map Pg 40"""
+        """Returns current clock source selection"""
         return self._clksel
 
     @clock_source.setter
     def clock_source(self, value: int) -> None:
-        """Sets CLKSEL value, Reg Map Pg 40"""
+        """Select between Internal/External clock sources"""
         if (value < 0) or (value > 7):
             raise ValueError(
                 "clock_source must be CLockSource value, integer from 0 - 7."
