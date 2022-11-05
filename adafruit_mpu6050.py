@@ -30,10 +30,6 @@ Implementation Notes
 * Adafruit's Register library:
   https://github.com/adafruit/Adafruit_CircuitPython_Register
 
-  Change log:
-      1) Added Clksel class to store options similar to previous author
-      2) Changed Register name to match Register Map documentation
-      3) Added Getter/Setter property to negotiate transactions
 """
 
 # imports
