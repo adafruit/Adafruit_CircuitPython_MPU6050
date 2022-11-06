@@ -381,7 +381,7 @@ class MPU6050:
     @clock_source.setter
     def clock_source(self, value: int) -> None:
         """Select between Internal/External clock sources"""
-        if value not in range(8)
+        if value not in range(8):
             raise ValueError(
                 "clock_source must be CLockSource value, integer from 0 - 7."
             )
