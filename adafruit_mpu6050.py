@@ -489,9 +489,7 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
 
     @low_power_mode.setter
     def low_power_mode(self, value: True) -> None:
-        """Set :py:attr:state_select True/False to Enter/Exit Low Power Mode.  Defaults to True.
-        Set :py:attr:rate to desired :py:attr:cycle_rate
-        """
+        """Set True/False to Enter/Exit Low Power Mode."""
         if value is False:
             self.low_power_mode_disable()
         else:
