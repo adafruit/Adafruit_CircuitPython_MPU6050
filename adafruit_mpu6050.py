@@ -76,29 +76,6 @@ _MPU6050_WHO_AM_I = 0x75  # Divice ID register
 STANDARD_GRAVITY = 9.80665
 
 
-class ExtSyncSet:  # pylint: disable=too-few-public-methods
-    """Allowed values for :py:attr:`ext_sync_set` Register object.
-
-    * :py:attr:'ExtSyncSet.DISABLED
-    * :py:attr:'ExtSyncSet.TEMP_OUT_L
-    * :py:attr:'ExtSyncSet.GYRO_XOUT_L
-    * :py:attr:'ExtSyncSet.GYRO_YOUT_L
-    * :py:attr:'ExtSyncSet.GYRO_ZOUT_L
-    * :py:attr:'ExtSyncSet.ACCEL_XOUT_L
-    * :py:attr:'ExtSyncSet.ACCEL_YOUT_L
-    * :py:attr:'ExtSyncSet.ACCEL_ZOUT_L
-    """
-
-    DISABLED = 0  # FSYNC Input disabed
-    TEMP_OUT = 1  # Data found at MPU6050_TEMP_OUT_L
-    GYRO_XOUT = 2  # Data found at MPU6050_GYRO_XOUT
-    GYRO_YOUT = 3  # Data found at MPU6050_GYRO_YOUT
-    GYRO_ZOUT = 4  # Data found at MPU6050_GYRO_ZOUT
-    ACCEL_XOUT = 5  # Data found at MPU6050_ACCEL_XOUT
-    ACCEL_YOUT = 6  # Data found at MPU6050_ACCEL_YOUT
-    ACCEL_ZOUT = 7  # Data found at MPU6050_ACCEL_ZOUT
-
-
 class Range:  # pylint: disable=too-few-public-methods
     """Allowed values for :py:attr:`accelerometer_range`.
 
