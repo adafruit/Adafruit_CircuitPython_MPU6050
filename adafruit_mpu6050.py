@@ -76,6 +76,29 @@ _MPU6050_WHO_AM_I = 0x75  # Divice ID register
 STANDARD_GRAVITY = 9.80665
 
 
+class ExtSyncSet:  # pylint: disable=too-few-public-methods
+    """Allowed values for :py:attr:`ext_sync_set` Register object.
+
+    * :py:attr:'ExtSyncSet.DISABLED
+    * :py:attr:'ExtSyncSet.TEMP_OUT_L
+    * :py:attr:'ExtSyncSet.GYRO_XOUT_L
+    * :py:attr:'ExtSyncSet.GYRO_YOUT_L
+    * :py:attr:'ExtSyncSet.GYRO_ZOUT_L
+    * :py:attr:'ExtSyncSet.ACCEL_XOUT_L
+    * :py:attr:'ExtSyncSet.ACCEL_YOUT_L
+    * :py:attr:'ExtSyncSet.ACCEL_ZOUT_L
+    """
+
+    DISABLED = 0  # FSYNC Input disabed
+    TEMP_OUT = 1  # Data found at MPU6050_TEMP_OUT_L
+    GYRO_XOUT = 2  # Data found at MPU6050_GYRO_XOUT
+    GYRO_YOUT = 3  # Data found at MPU6050_GYRO_YOUT
+    GYRO_ZOUT = 4  # Data found at MPU6050_GYRO_ZOUT
+    ACCEL_XOUT = 5  # Data found at MPU6050_ACCEL_XOUT
+    ACCEL_YOUT = 6  # Data found at MPU6050_ACCEL_YOUT
+    ACCEL_ZOUT = 7  # Data found at MPU6050_ACCEL_ZOUT
+
+
 class Range:  # pylint: disable=too-few-public-methods
     """Allowed values for :py:attr:`accelerometer_range`.
 
@@ -370,7 +393,7 @@ class MPU6050:  # pylint: disable = too-many-instance-attributes
         """Sets state of _int_rd_clr, Reg Map Pg 26
         True : Interrupt Status bits cleared by ANY I2C Read operation
         False: Interrupt Status bits cleared  ONLY reading from
-               _MPU6050_INT_STATUS REGISTER Register dec(58)"""
+        _MPU6050_INT_STATUS REGISTER Register dec(58)"""
         self._int_rd_clr = int(value)
 
     @property
@@ -412,17 +435,15 @@ class MPU6050:  # pylint: disable = too-many-instance-attributes
     @property
     def dataready_int(self) -> bool:
         """Returns state _data_rdy_int, Reg Map Pg 28
-         True:"Data Ready Interrupt" has been generated
+        True:"Data Ready Interrupt" has been generated
         False: "Data Ready Interrupt" has NOT been generated
-
-        = NOTE: Clears to 0 after the register has been read"""
+        NOTE: Clears to 0 after the register has been read"""
         return self._data_rdy_int
 
     @property
     def fifo_overflow_int(self) -> bool:
         """Returns state _fifo_oflow_int, Reg Map Pg 28
-         True: "FIFO Buffer Overflow Interrupt" has been generated
+        True: "FIFO Buffer Overflow Interrupt" has been generated
         False: "FIFO Buffer Overflow Interrupt" has NOT been generated
-
-        = NOTE: Clears to 0 after the register has been read"""
+        NOTE: Clears to 0 after the register has been read"""
         return self._fifo_oflow_int
