@@ -375,7 +375,7 @@ class MPU6050:
 
     @property
     def clock_source(self) -> int:
-        """Getter/Setter property for clock source selection"""
+        """The clock source for the sensor"""
         return self._clksel
 
     @clock_source.setter
