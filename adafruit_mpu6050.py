@@ -29,6 +29,7 @@ Implementation Notes
 
 * Adafruit's Register library:
   https://github.com/adafruit/Adafruit_CircuitPython_Register
+
 """
 
 # imports
@@ -74,13 +75,36 @@ _MPU6050_WHO_AM_I = 0x75  # Divice ID register
 STANDARD_GRAVITY = 9.80665
 
 
-class Range:  # pylint: disable=too-few-public-methods
-    """Allowed values for `accelerometer_range`.
+class ClockSource:  # pylint: disable=too-few-public-methods
+    """Allowed values for :py:attr:`clock_source`.
 
-    * :attr:`Range.RANGE_2_G`
-    * :attr:`Range.RANGE_4_G`
-    * :attr:`Range.RANGE_8_G`
-    * :attr:`Range.RANGE_16_G`
+    * :py:attr:'ClockSource.CLKSEL_INTERNAL_8MHz
+    * :py:attr:'ClockSource.CLKSEL_INTERNAL_X
+    * :py:attr:'ClockSource.CLKSEL_INTERNAL_Y
+    * :py:attr:'ClockSource.CLKSEL_INTERNAL_Z
+    * :py:attr:'ClockSource.CLKSEL_EXTERNAL_32
+    * :py:attr:'ClockSource.CLKSEL_EXTERNAL_19
+    * :py:attr:'ClockSource.CLKSEL_RESERVED
+    * :py:attr:'ClockSource.CLKSEL_STOP
+    """
+
+    CLKSEL_INTERNAL_8MHz = 0  # Internal 8MHz oscillator
+    CLKSEL_INTERNAL_X = 1  # PLL with X Axis gyroscope reference
+    CLKSEL_INTERNAL_Y = 2  # PLL with Y Axis gyroscope reference
+    CLKSEL_INTERNAL_Z = 3  # PLL with Z Axis gyroscope reference
+    CLKSEL_EXTERNAL_32 = 4  # External 32.768 kHz reference
+    CLKSEL_EXTERNAL_19 = 5  # External 19.2 MHz reference
+    CLKSEL_RESERVED = 6  # Reserved
+    CLKSEL_STOP = 7  # Stops the clock, constant reset mode
+
+
+class Range:  # pylint: disable=too-few-public-methods
+    """Allowed values for :py:attr:`accelerometer_range`.
+
+    * :py:attr:`Range.RANGE_2_G`
+    * :py:attr:`Range.RANGE_4_G`
+    * :py:attr:`Range.RANGE_8_G`
+    * :py:attr:`Range.RANGE_16_G`
 
     """
 
@@ -91,12 +115,12 @@ class Range:  # pylint: disable=too-few-public-methods
 
 
 class GyroRange:  # pylint: disable=too-few-public-methods
-    """Allowed values for `gyro_range`.
+    """Allowed values for :py:attr:`gyro_range`.
 
-    * :attr:`GyroRange.RANGE_250_DPS`
-    * :attr:`GyroRange.RANGE_500_DPS`
-    * :attr:`GyroRange.RANGE_1000_DPS`
-    * :attr:`GyroRange.RANGE_2000_DPS`
+    * :py:attr:`GyroRange.RANGE_250_DPS`
+    * :py:attr:`GyroRange.RANGE_500_DPS`
+    * :py:attr:`GyroRange.RANGE_1000_DPS`
+    * :py:attr:`GyroRange.RANGE_2000_DPS`
 
     """
 
@@ -107,15 +131,15 @@ class GyroRange:  # pylint: disable=too-few-public-methods
 
 
 class Bandwidth:  # pylint: disable=too-few-public-methods
-    """Allowed values for `filter_bandwidth`.
+    """Allowed values for :py:attr:`filter_bandwidth`.
 
-    * :attr:`Bandwidth.BAND_260_HZ`
-    * :attr:`Bandwidth.BAND_184_HZ`
-    * :attr:`Bandwidth.BAND_94_HZ`
-    * :attr:`Bandwidth.BAND_44_HZ`
-    * :attr:`Bandwidth.BAND_21_HZ`
-    * :attr:`Bandwidth.BAND_10_HZ`
-    * :attr:`Bandwidth.BAND_5_HZ`
+    * :py:attr:`Bandwidth.BAND_260_HZ`
+    * :py:attr:`Bandwidth.BAND_184_HZ`
+    * :py:attr:`Bandwidth.BAND_94_HZ`
+    * :py:attr:`Bandwidth.BAND_44_HZ`
+    * :py:attr:`Bandwidth.BAND_21_HZ`
+    * :py:attr:`Bandwidth.BAND_10_HZ`
+    * :py:attr:`Bandwidth.BAND_5_HZ`
 
     """
 
@@ -129,12 +153,12 @@ class Bandwidth:  # pylint: disable=too-few-public-methods
 
 
 class Rate:  # pylint: disable=too-few-public-methods
-    """Allowed values for `cycle_rate`.
+    """Allowed values for :py:attr:`cycle_rate`.
 
-    * :attr:`Rate.CYCLE_1_25_HZ`
-    * :attr:`Rate.CYCLE_5_HZ`
-    * :attr:`Rate.CYCLE_20_HZ`
-    * :attr:`Rate.CYCLE_40_HZ`
+    * :py:attr:`Rate.CYCLE_1_25_HZ`
+    * :py:attr:`Rate.CYCLE_5_HZ`
+    * :py:attr:`Rate.CYCLE_20_HZ`
+    * :py:attr:`Rate.CYCLE_40_HZ`
 
     """
 
@@ -175,7 +199,6 @@ class MPU6050:
             acc_x, acc_y, acc_z = sensor.acceleration
             gyro_x, gyro_y, gyro_z = sensor.gyro
             temperature = sensor.temperature
-
     """
 
     def __init__(self, i2c_bus: I2C, address: int = _MPU6050_DEFAULT_ADDRESS) -> None:
@@ -191,7 +214,9 @@ class MPU6050:
         self._gyro_range = GyroRange.RANGE_500_DPS
         self._accel_range = Range.RANGE_2_G
         sleep(0.100)
-        self._clock_source = 1  # set to use gyro x-axis as reference
+        self.clock_source = (
+            ClockSource.CLKSEL_INTERNAL_X
+        )  # set to use gyro x-axis as reference
         sleep(0.100)
         self.sleep = False
         sleep(0.010)
@@ -206,7 +231,7 @@ class MPU6050:
         _signal_path_reset = 0b111  # reset all sensors
         sleep(0.100)
 
-    _clock_source = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
+    _clksel = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
     _device_id = ROUnaryStruct(_MPU6050_WHO_AM_I, ">B")
 
     _reset = RWBit(_MPU6050_PWR_MGMT_1, 7, 1)
@@ -347,3 +372,17 @@ class MPU6050:
             raise ValueError("cycle_rate must be a Rate")
         self._cycle_rate = value
         sleep(0.01)
+
+    @property
+    def clock_source(self) -> int:
+        """The clock source for the sensor"""
+        return self._clksel
+
+    @clock_source.setter
+    def clock_source(self, value: int) -> None:
+        """Select between Internal/External clock sources"""
+        if value not in range(8):
+            raise ValueError(
+                "clock_source must be ClockSource value, integer from 0 - 7."
+            )
+        self._clksel = value
