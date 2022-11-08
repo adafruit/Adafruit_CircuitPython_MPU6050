@@ -62,7 +62,9 @@ _MPU6050_SMPLRT_DIV = 0x19  # sample rate divisor register
 _MPU6050_CONFIG = 0x1A  # General configuration register
 _MPU6050_GYRO_CONFIG = 0x1B  # Gyro specfic configuration register
 _MPU6050_ACCEL_CONFIG = 0x1C  # Accelerometer specific configration register
-_MPU6050_INT_PIN_CONFIG = 0x37  # Interrupt pin configuration register
+_MPU6050_INT_PIN_CFG = 0x37  # Interrupt pin configuration register
+_MPU6050_INT_ENABLE = 0x38  # Interrupt Enable register
+_MPU6050_INT_STATUS = 0x3A  #  Interrupt Status
 _MPU6050_ACCEL_OUT = 0x3B  # base address for sensor data reads
 _MPU6050_TEMP_OUT = 0x41  # Temperature data high byte register
 _MPU6050_GYRO_OUT = 0x43  # base address for sensor data reads
@@ -73,6 +75,29 @@ _MPU6050_PWR_MGMT_2 = 0x6C  # Secondary power/sleep control register
 _MPU6050_WHO_AM_I = 0x75  # Divice ID register
 
 STANDARD_GRAVITY = 9.80665
+
+
+class ExtSyncSet:  # pylint: disable=too-few-public-methods
+    """Allowed values for :py:attr:`ext_sync_set` property.
+
+    * :attr:'ExtSyncSet.DISABLED
+    * :attr:'ExtSyncSet.TEMP_OUT_L
+    * :attr:'ExtSyncSet.GYRO_XOUT_L
+    * :attr:'ExtSyncSet.GYRO_YOUT_L
+    * :attr:'ExtSyncSet.GYRO_ZOUT_L
+    * :attr:'ExtSyncSet.ACCEL_XOUT_L
+    * :attr:'ExtSyncSet.ACCEL_YOUT_L
+    * :attr:'ExtSyncSet.ACCEL_ZOUT_L
+    """
+
+    DISABLED = 0  # FSYNC Input disabed
+    TEMP_OUT = 1  # Data found at MPU6050_TEMP_OUT_L
+    GYRO_XOUT = 2  # Data found at MPU6050_GYRO_XOUT
+    GYRO_YOUT = 3  # Data found at MPU6050_GYRO_YOUT
+    GYRO_ZOUT = 4  # Data found at MPU6050_GYRO_ZOUT
+    ACCEL_XOUT = 5  # Data found at MPU6050_ACCEL_XOUT
+    ACCEL_YOUT = 6  # Data found at MPU6050_ACCEL_YOUT
+    ACCEL_ZOUT = 7  # Data found at MPU6050_ACCEL_ZOUT
 
 
 class ClockSource:  # pylint: disable=too-few-public-methods
@@ -168,7 +193,7 @@ class Rate:  # pylint: disable=too-few-public-methods
     CYCLE_40_HZ = 3  # 40 Hz
 
 
-class MPU6050:
+class MPU6050:  # pylint: disable=too-many-instance-attributes
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
     :param ~busio.I2C i2c_bus: The I2C bus the device is connected to
@@ -222,7 +247,7 @@ class MPU6050:
         sleep(0.010)
 
     def reset(self) -> None:
-        """Reinitialize the sensor"""
+        """Restores the sensor to factory default settings"""
         self._reset = True
         while self._reset is True:
             sleep(0.001)
@@ -240,7 +265,20 @@ class MPU6050:
     _gyro_range = RWBits(2, _MPU6050_GYRO_CONFIG, 3)
     _accel_range = RWBits(2, _MPU6050_ACCEL_CONFIG, 3)
 
-    _filter_bandwidth = RWBits(2, _MPU6050_CONFIG, 3)
+    _filter_bandwidth = RWBits(3, _MPU6050_CONFIG, 0)
+    _ext_sync_set = RWBits(3, _MPU6050_CONFIG, 3)
+
+    _fsync_int_en_ = RWBit(_MPU6050_INT_PIN_CFG, 3)
+    _fsync_int_level = RWBit(_MPU6050_INT_PIN_CFG, 4)
+    _int_rd_clear = RWBit(_MPU6050_INT_PIN_CFG, 5)
+    _int_open = RWBit(_MPU6050_INT_PIN_CFG, 6)
+    _int_level = RWBit(_MPU6050_INT_PIN_CFG, 7)
+
+    _data_rdy_en = RWBit(_MPU6050_INT_ENABLE, 0)
+    _fifo_oflow_en = RWBit(_MPU6050_INT_ENABLE, 4)
+
+    _data_rdy_int = RWBit(_MPU6050_INT_STATUS, 0)
+    _fifo_oflow_int = RWBit(_MPU6050_INT_STATUS, 4)
 
     _raw_accel_data = StructArray(_MPU6050_ACCEL_OUT, ">h", 3)
     _raw_gyro_data = StructArray(_MPU6050_GYRO_OUT, ">h", 3)
@@ -386,3 +424,98 @@ class MPU6050:
                 "clock_source must be ClockSource value, integer from 0 - 7."
             )
         self._clksel = value
+
+    @property
+    def fsync_int_enable(self) -> bool:
+        """True = Frame Sync Interrupt Enabled
+        False = Frame Sync Interrupt Disabled
+        NOTE: FSYNC pin used as output"""
+        return self._fsync_int_en
+
+    @fsync_int_enable.setter
+    def fsync_int_enable(self, value: bool) -> None:
+        self._fsync_int_en = int(value)
+
+    @property
+    def fsync_int_level(self) -> bool:
+        """Deterimines the behaviour of the FSYNC pin as follows:
+         True: Active when FSYNC pin LO
+        False: Active when FSYNC pin HI"""
+        return self._fsync_int_lvl
+
+    @fsync_int_level.setter
+    def fsync_int_level(self, value: bool) -> None:
+        self._fsync_int_lvl = int(value)
+
+    @property
+    def int_read_clear(self) -> bool:
+        """True : Interrupt Status bits cleared by ANY I2C Read operation
+        False: Interrupt Status bits cleared  ONLY reading from
+        _MPU6050_INT_STATUS REGISTER Register dec(58)"""
+        return self._int_rd_clr
+
+    @int_read_clear.setter
+    def int_read_clear(self, value: bool) -> None:
+        self._int_rd_clr = int(value)
+
+    @property
+    def int_latch_enable(self) -> bool:
+        """Sets state of _latch_int_en, Reg Map Pg 26
+        True : INT pin held to int_level setting until cleared
+        False: INT pin held to int_level for 50us pulse"""
+        return self._latch_int_en
+
+    @int_latch_enable.setter
+    def int_latch_enable(self, value: bool) -> None:
+        self._latch_int_en = int(value)
+
+    @property
+    def int_open(self) -> bool:
+        """Sets state of _int_open, Reg Map Pg 26
+        True : INT pin configured as open drain
+        False: INT pin configured as push-pull"""
+        return self._int_open
+
+    @int_open.setter
+    def int_open(self, value: bool) -> None:
+        self._int_open = int(value)
+
+    @property
+    def int_level(self) -> bool:
+        """Sets state of _int_level, Reg Map Pg 26
+        True : INT pin active when LO
+        False: INT pin active when HI"""
+        return self._int_level
+
+    @int_level.setter
+    def int_level(self, value: bool) -> None:
+        self._int_level = int(value)
+
+    @property
+    def dataready_int(self) -> bool:
+        """Returns state _int_level, Reg Map Pg 28
+        True:"Data Ready Interrupt" has been generated
+        False: "Data Ready Interrupt" has NOT been generated
+        NOTE: Clears to 0 after the register has been read"""
+        return self._data_rdy_int
+
+    @property
+    def fifo_overflow_int(self) -> bool:
+        """Returns state _fifo_oflow_int, Reg Map Pg 28
+         True: "FIFO Buffer Overflow Interrupt" has been generated
+        False: "FIFO Buffer Overflow Interrupt" has NOT been generated
+         NOTE: Clears to 0 after the register has been read"""
+        return self._fifo_oflow_int
+
+    @property
+    def ext_sync_set(self) -> int:
+        """Configures the FSYNC) pin as an input.  The sampled value will
+        be reported in place of the least significant bit in a sensor
+        data register determined by the value of ExtSyncSet"""
+        return self._ext_sync_set
+
+    @ext_sync_set.setter
+    def ext_sync_set(self, value: int) -> None:
+        if value not in range(0, 8):
+            raise ValueError("setting must be ExtSyncSet, integer from 0 - 7")
+        self._ext_sync_set = value
