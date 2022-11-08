@@ -439,7 +439,7 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
     @property
     def fsync_int_level(self) -> bool:
         """Deterimines the behaviour of the FSYNC pin as follows:
-         True: Active when FSYNC pin LO
+        True: Active when FSYNC pin LO
         False: Active when FSYNC pin HI"""
         return self._fsync_int_lvl
 
@@ -502,9 +502,9 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
     @property
     def fifo_overflow_int(self) -> bool:
         """Returns state _fifo_oflow_int, Reg Map Pg 28
-         True: "FIFO Buffer Overflow Interrupt" has been generated
+        True: "FIFO Buffer Overflow Interrupt" has been generated
         False: "FIFO Buffer Overflow Interrupt" has NOT been generated
-         NOTE: Clears to 0 after the register has been read"""
+        NOTE: Clears to 0 after the register has been read"""
         return self._fifo_oflow_int
 
     @property
