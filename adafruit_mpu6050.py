@@ -29,6 +29,7 @@ Implementation Notes
 
 * Adafruit's Register library:
   https://github.com/adafruit/Adafruit_CircuitPython_Register
+
 """
 
 # imports
@@ -62,8 +63,8 @@ _MPU6050_CONFIG = 0x1A  # General configuration register
 _MPU6050_GYRO_CONFIG = 0x1B  # Gyro specfic configuration register
 _MPU6050_ACCEL_CONFIG = 0x1C  # Accelerometer specific configration register
 _MPU6050_INT_PIN_CFG = 0x37  # Interrupt pin configuration register
-_MPU6050_INT_ENABLE = 0x38  # Interrupt pin enables
-_MPU6050_INT_STATUS = 0x3A  # Reports interrupts to check
+_MPU6050_INT_ENABLE = 0x38  # Interrupt Enable register
+_MPU6050_INT_STATUS = 0x3A  #  Interrupt Status
 _MPU6050_ACCEL_OUT = 0x3B  # base address for sensor data reads
 _MPU6050_TEMP_OUT = 0x41  # Temperature data high byte register
 _MPU6050_GYRO_OUT = 0x43  # base address for sensor data reads
@@ -77,16 +78,16 @@ STANDARD_GRAVITY = 9.80665
 
 
 class ExtSyncSet:  # pylint: disable=too-few-public-methods
-    """Allowed values for :py:attr:`ext_sync_set` Register object.
+    """Allowed values for :py:attr:`ext_sync_set` property.
 
-    * :py:attr:'ExtSyncSet.DISABLED
-    * :py:attr:'ExtSyncSet.TEMP_OUT_L
-    * :py:attr:'ExtSyncSet.GYRO_XOUT_L
-    * :py:attr:'ExtSyncSet.GYRO_YOUT_L
-    * :py:attr:'ExtSyncSet.GYRO_ZOUT_L
-    * :py:attr:'ExtSyncSet.ACCEL_XOUT_L
-    * :py:attr:'ExtSyncSet.ACCEL_YOUT_L
-    * :py:attr:'ExtSyncSet.ACCEL_ZOUT_L
+    * :attr:'ExtSyncSet.DISABLED
+    * :attr:'ExtSyncSet.TEMP_OUT_L
+    * :attr:'ExtSyncSet.GYRO_XOUT_L
+    * :attr:'ExtSyncSet.GYRO_YOUT_L
+    * :attr:'ExtSyncSet.GYRO_ZOUT_L
+    * :attr:'ExtSyncSet.ACCEL_XOUT_L
+    * :attr:'ExtSyncSet.ACCEL_YOUT_L
+    * :attr:'ExtSyncSet.ACCEL_ZOUT_L
     """
 
     DISABLED = 0  # FSYNC Input disabed
@@ -97,6 +98,29 @@ class ExtSyncSet:  # pylint: disable=too-few-public-methods
     ACCEL_XOUT = 5  # Data found at MPU6050_ACCEL_XOUT
     ACCEL_YOUT = 6  # Data found at MPU6050_ACCEL_YOUT
     ACCEL_ZOUT = 7  # Data found at MPU6050_ACCEL_ZOUT
+
+
+class ClockSource:  # pylint: disable=too-few-public-methods
+    """Allowed values for :py:attr:`clock_source`.
+
+    * :py:attr:'ClockSource.CLKSEL_INTERNAL_8MHz
+    * :py:attr:'ClockSource.CLKSEL_INTERNAL_X
+    * :py:attr:'ClockSource.CLKSEL_INTERNAL_Y
+    * :py:attr:'ClockSource.CLKSEL_INTERNAL_Z
+    * :py:attr:'ClockSource.CLKSEL_EXTERNAL_32
+    * :py:attr:'ClockSource.CLKSEL_EXTERNAL_19
+    * :py:attr:'ClockSource.CLKSEL_RESERVED
+    * :py:attr:'ClockSource.CLKSEL_STOP
+    """
+
+    CLKSEL_INTERNAL_8MHz = 0  # Internal 8MHz oscillator
+    CLKSEL_INTERNAL_X = 1  # PLL with X Axis gyroscope reference
+    CLKSEL_INTERNAL_Y = 2  # PLL with Y Axis gyroscope reference
+    CLKSEL_INTERNAL_Z = 3  # PLL with Z Axis gyroscope reference
+    CLKSEL_EXTERNAL_32 = 4  # External 32.768 kHz reference
+    CLKSEL_EXTERNAL_19 = 5  # External 19.2 MHz reference
+    CLKSEL_RESERVED = 6  # Reserved
+    CLKSEL_STOP = 7  # Stops the clock, constant reset mode
 
 
 class Range:  # pylint: disable=too-few-public-methods
@@ -169,7 +193,7 @@ class Rate:  # pylint: disable=too-few-public-methods
     CYCLE_40_HZ = 3  # 40 Hz
 
 
-class MPU6050:  # pylint: disable = too-many-instance-attributes
+class MPU6050:  # pylint: disable=too-many-instance-attributes
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
     :param ~busio.I2C i2c_bus: The I2C bus the device is connected to
@@ -200,7 +224,6 @@ class MPU6050:  # pylint: disable = too-many-instance-attributes
             acc_x, acc_y, acc_z = sensor.acceleration
             gyro_x, gyro_y, gyro_z = sensor.gyro
             temperature = sensor.temperature
-
     """
 
     def __init__(self, i2c_bus: I2C, address: int = _MPU6050_DEFAULT_ADDRESS) -> None:
@@ -216,13 +239,15 @@ class MPU6050:  # pylint: disable = too-many-instance-attributes
         self._gyro_range = GyroRange.RANGE_500_DPS
         self._accel_range = Range.RANGE_2_G
         sleep(0.100)
-        self._clock_source = 1  # set to use gyro x-axis as reference
+        self.clock_source = (
+            ClockSource.CLKSEL_INTERNAL_X
+        )  # set to use gyro x-axis as reference
         sleep(0.100)
         self.sleep = False
         sleep(0.010)
 
     def reset(self) -> None:
-        """Reinitialize the sensor"""
+        """Restores the sensor to factory default settings"""
         self._reset = True
         while self._reset is True:
             sleep(0.001)
@@ -231,7 +256,7 @@ class MPU6050:  # pylint: disable = too-many-instance-attributes
         _signal_path_reset = 0b111  # reset all sensors
         sleep(0.100)
 
-    _clock_source = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
+    _clksel = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
     _device_id = ROUnaryStruct(_MPU6050_WHO_AM_I, ">B")
 
     _reset = RWBit(_MPU6050_PWR_MGMT_1, 7, 1)
@@ -240,13 +265,12 @@ class MPU6050:  # pylint: disable = too-many-instance-attributes
     _gyro_range = RWBits(2, _MPU6050_GYRO_CONFIG, 3)
     _accel_range = RWBits(2, _MPU6050_ACCEL_CONFIG, 3)
 
-    _filter_bandwidth = RWBits(2, _MPU6050_CONFIG, 3)
+    _filter_bandwidth = RWBits(3, _MPU6050_CONFIG, 0)
+    _ext_sync_set = RWBits(3, _MPU6050_CONFIG, 3)
 
-    _raw_accel_data = StructArray(_MPU6050_ACCEL_OUT, ">h", 3)
-    _raw_gyro_data = StructArray(_MPU6050_GYRO_OUT, ">h", 3)
-    _raw_temp_data = ROUnaryStruct(_MPU6050_TEMP_OUT, ">h")
-
-    _int_rd_clr = RWBit(_MPU6050_INT_PIN_CFG, 5)
+    _fsync_int_en_ = RWBit(_MPU6050_INT_PIN_CFG, 3)
+    _fsync_int_level = RWBit(_MPU6050_INT_PIN_CFG, 4)
+    _int_rd_clear = RWBit(_MPU6050_INT_PIN_CFG, 5)
     _int_open = RWBit(_MPU6050_INT_PIN_CFG, 6)
     _int_level = RWBit(_MPU6050_INT_PIN_CFG, 7)
 
@@ -255,6 +279,10 @@ class MPU6050:  # pylint: disable = too-many-instance-attributes
 
     _data_rdy_int = RWBit(_MPU6050_INT_STATUS, 0)
     _fifo_oflow_int = RWBit(_MPU6050_INT_STATUS, 4)
+
+    _raw_accel_data = StructArray(_MPU6050_ACCEL_OUT, ">h", 3)
+    _raw_gyro_data = StructArray(_MPU6050_GYRO_OUT, ">h", 3)
+    _raw_temp_data = ROUnaryStruct(_MPU6050_TEMP_OUT, ">h")
 
     _cycle = RWBit(_MPU6050_PWR_MGMT_1, 5)
     _cycle_rate = RWBits(2, _MPU6050_PWR_MGMT_2, 6, 1)
@@ -384,57 +412,88 @@ class MPU6050:  # pylint: disable = too-many-instance-attributes
         sleep(0.01)
 
     @property
+    def clock_source(self) -> int:
+        """The clock source for the sensor"""
+        return self._clksel
+
+    @clock_source.setter
+    def clock_source(self, value: int) -> None:
+        """Select between Internal/External clock sources"""
+        if value not in range(8):
+            raise ValueError(
+                "clock_source must be ClockSource value, integer from 0 - 7."
+            )
+        self._clksel = value
+
+    @property
+    def fsync_int_enable(self) -> bool:
+        """True = Frame Sync Interrupt Enabled
+        False = Frame Sync Interrupt Disabled
+        NOTE: FSYNC pin used as output"""
+        return self._fsync_int_en
+
+    @fsync_int_enable.setter
+    def fsync_int_enable(self, value: bool) -> None:
+        self._fsync_int_en = int(value)
+
+    @property
+    def fsync_int_level(self) -> bool:
+        """Deterimines the behaviour of the FSYNC pin as follows:
+         True: Active when FSYNC pin LO
+        False: Active when FSYNC pin HI"""
+        return self._fsync_int_lvl
+
+    @fsync_int_level.setter
+    def fsync_int_level(self, value: bool) -> None:
+        self._fsync_int_lvl = int(value)
+
+    @property
     def int_read_clear(self) -> bool:
-        """Returns state _int_rd_clr, Reg Map Pg 26"""
+        """True : Interrupt Status bits cleared by ANY I2C Read operation
+        False: Interrupt Status bits cleared  ONLY reading from
+        _MPU6050_INT_STATUS REGISTER Register dec(58)"""
         return self._int_rd_clr
 
     @int_read_clear.setter
     def int_read_clear(self, value: bool) -> None:
-        """Sets state of _int_rd_clr, Reg Map Pg 26
-        True : Interrupt Status bits cleared by ANY I2C Read operation
-        False: Interrupt Status bits cleared  ONLY reading from
-        _MPU6050_INT_STATUS REGISTER Register dec(58)"""
         self._int_rd_clr = int(value)
 
     @property
     def int_latch_enable(self) -> bool:
-        """Returns state _latch_int_en, Reg Map Pg 26"""
+        """Sets state of _latch_int_en, Reg Map Pg 26
+        True : INT pin held to int_level setting until cleared
+        False: INT pin held to int_level for 50us pulse"""
         return self._latch_int_en
 
     @int_latch_enable.setter
     def int_latch_enable(self, value: bool) -> None:
-        """Sets state of _latch_int_en, Reg Map Pg 26
-        True : INT pin held to int_level setting until cleared
-        False: INT pin held to int_level for 50us pulse"""
         self._latch_int_en = int(value)
 
     @property
     def int_open(self) -> bool:
-        """Returns state _int_open, Reg Map Pg 26"""
+        """Sets state of _int_open, Reg Map Pg 26
+        True : INT pin configured as open drain
+        False: INT pin configured as push-pull"""
         return self._int_open
 
     @int_open.setter
     def int_open(self, value: bool) -> None:
-        """Sets state of _int_open, Reg Map Pg 26
-        True : INT pin configured as open drain
-        False: INT pin configured as push-pull"""
         self._int_open = int(value)
 
     @property
     def int_level(self) -> bool:
-        """Returns state _int_level, Reg Map Pg 26"""
+        """Sets state of _int_level, Reg Map Pg 26
+        True : INT pin active when LO
+        False: INT pin active when HI"""
         return self._int_level
 
     @int_level.setter
     def int_level(self, value: bool) -> None:
-        """Sets state of _int_level, Reg Map Pg 26
-        True : INT pin active when LO
-        False: INT pin active when HI"""
         self._int_level = int(value)
 
     @property
     def dataready_int(self) -> bool:
-        """Returns state _data_rdy_int, Reg Map Pg 28
+        """Returns state _int_level, Reg Map Pg 28
         True:"Data Ready Interrupt" has been generated
         False: "Data Ready Interrupt" has NOT been generated
         NOTE: Clears to 0 after the register has been read"""
@@ -443,7 +502,20 @@ class MPU6050:  # pylint: disable = too-many-instance-attributes
     @property
     def fifo_overflow_int(self) -> bool:
         """Returns state _fifo_oflow_int, Reg Map Pg 28
-        True: "FIFO Buffer Overflow Interrupt" has been generated
+         True: "FIFO Buffer Overflow Interrupt" has been generated
         False: "FIFO Buffer Overflow Interrupt" has NOT been generated
-        NOTE: Clears to 0 after the register has been read"""
+         NOTE: Clears to 0 after the register has been read"""
         return self._fifo_oflow_int
+
+    @property
+    def ext_sync_set(self) -> int:
+        """Configures the FSYNC) pin as an input.  The sampled value will
+        be reported in place of the least significant bit in a sensor
+        data register determined by the value of ExtSyncSet"""
+        return self._ext_sync_set
+
+    @ext_sync_set.setter
+    def ext_sync_set(self, value: int) -> None:
+        if value not in range(0, 8):
+            raise ValueError("setting must be ExtSyncSet, integer from 0 - 7")
+        self._ext_sync_set = value
