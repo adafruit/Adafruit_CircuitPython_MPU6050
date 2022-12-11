@@ -194,6 +194,7 @@ class Rate:  # pylint: disable=too-few-public-methods
 
 
 class MPU6050:  # pylint: disable=too-many-instance-attributes
+    # pylint: disable=too-many-public-methods
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
     :param ~busio.I2C i2c_bus: The I2C bus the device is connected to
@@ -226,43 +227,43 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
             acc_x, acc_y, acc_z = mpu.acceleration
             gyro_x, gyro_y, gyro_z = mpu.gyro
             temperature = mpu.temperature
-        
+
         You can also configure the interrupt pin to respond as desired when certain conditions
         are met.  This can be very useful when you are reading data from multiple different sensors.
-        Simply configure the interrupt pin, connect it electrically to a GPIO pin on your 
-        microcontroller.  
-        
+        Simply configure the interrupt pin, connect it electrically to a GPIO pin on your
+        microcontroller.
+
         For example:
-        
+
         ..code-block:: python
-        
+
             # Import necessary modules/packages
             import digitalio
             import board
             import adafruit_mpu6050
-            
+
             # Configure I2C bus and instantiate mpu6050 object
             i2c = board.I2C()  # uses board.SCL and board.SDA
             mpu = adafruit_mpu6050.MPU6050(i2c)
-            
+
             # Configure MPU6050 interrupt pin registers
-            mpu.int_read_clear = True   # Clear interrupts after ANY I2C read 
+            mpu.int_read_clear = True   # Clear interrupts after ANY I2C read
             mpu.int_latch_enable = True   # Interrupt enabled until cleared by an I2C read
-            mpu.int_level = False   # Interrupt Pin state goes HI when an interrupt has been generated
+            mpu.int_level = False   # Interrupt Pin HI when an interrupt has been generated
             mpu.int_open = False   # Push-Pull configuration
             mpu.data_rdy_en = True   # Enable 'Data Ready Interrupts'
-            
-            # Assign an interrupt pin of your choice on the microcontroller, Pin number will vary by board
-            int_pin = digitalio.DigitalInOut(board.D5)  # Create a pin object, INPUT by default assignment
-            
+
+            # Assign an interrupt pin
+            int_pin = digitalio.DigitalInOut(board.D5)  # INPUT by default assignment
+
             # If interrupt pin is HI / True, read sensor data
             # Else, interrupt pin is LO / False, pass and check again next time through the loop
             while(True):
                 if int_pin.value == True:
                     acc_x, acc_y, acc_z = mpu.acceleration
-                else:                
-                    pass        
-        
+                else:
+                    pass
+
     """
 
     def __init__(self, i2c_bus: I2C, address: int = _MPU6050_DEFAULT_ADDRESS) -> None:
@@ -558,7 +559,7 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
         if value not in range(0, 8):
             raise ValueError("setting must be ExtSyncSet, integer from 0 - 7")
         self._ext_sync_set = value
-    
+
     @property
     def data_rdy_en(self) -> bool:
         """Returns state _data_rdy_en , Reg Map Pg 27
@@ -567,9 +568,9 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
         return self._data_rdy_en
 
     @data_rdy_en.setter
-    def data_rdy_en(self, value:bool) -> None:
+    def data_rdy_en(self, value: bool) -> None:
         self._data_rdy_en = value
-        
+
     @property
     def fifo_oflow_en(self) -> bool:
         """Returns state _fifo_oflow_en , Reg Map Pg 27
@@ -578,5 +579,5 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
         return self._fifo_oflow_en
 
     @fifo_oflow_en.setter
-    def fifo_oflow_en(self, value:bool) -> None:
+    def fifo_oflow_en(self, value: bool) -> None:
         self._fifo_oflow_en = value
