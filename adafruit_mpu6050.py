@@ -230,7 +230,7 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
 
         For example:
 
-        ..code-block:: python
+        .. code-block:: python
 
             # Import necessary modules/packages
             import digitalio
