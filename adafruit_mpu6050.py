@@ -221,12 +221,10 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
         and :attr:`temperature` attributes
 
         .. code-block:: python
-            i2c = board.I2C()  # uses board.SCL and board.SDA
-            mpu = adafruit_mpu6050.MPU6050(i2c)
-
-            acc_x, acc_y, acc_z = mpu.acceleration
-            gyro_x, gyro_y, gyro_z = mpu.gyro
-            temperature = mpu.temperature
+        
+            acc_x, acc_y, acc_z = sensor.acceleration
+            gyro_x, gyro_y, gyro_z = sensor.gyro
+            temperature = sensor.temperature
 
         You can also configure the interrupt pin to respond as desired when certain conditions
         are met.  This can be very useful when you are reading data from multiple different sensors.
