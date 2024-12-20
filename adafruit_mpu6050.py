@@ -6,7 +6,9 @@
 `adafruit_mpu6050`
 ================================================================================
 
-CircuitPython helper library for the MPU6050 6-DoF Accelerometer and Gyroscope
+CircuitPython helper library for the MPU6050 6-DoF Accelerometer and Gyroscope.
+
+This driver requires too much RAM to be used on SAMD21 based devices.
 
 
 * Author(s): Bryan Siepert
