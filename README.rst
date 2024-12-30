@@ -32,6 +32,8 @@ Please ensure all dependencies are available on the CircuitPython filesystem.
 This is easily achieved by downloading
 `the Adafruit library and driver bundle <https://github.com/adafruit/Adafruit_CircuitPython_Bundle>`_.
 
+Note: This driver requires too much RAM to be used on SAMD21 based devices.
+
 Installing from PyPI
 =====================
 On supported GNU/Linux systems like the Raspberry Pi, you can install the driver locally `from
