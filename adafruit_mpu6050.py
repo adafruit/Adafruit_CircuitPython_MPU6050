@@ -64,6 +64,7 @@ _MPU6050_SMPLRT_DIV = 0x19  # sample rate divisor register
 _MPU6050_CONFIG = 0x1A  # General configuration register
 _MPU6050_GYRO_CONFIG = 0x1B  # Gyro specfic configuration register
 _MPU6050_ACCEL_CONFIG = 0x1C  # Accelerometer specific configration register
+_MPU6050_FIFO_EN = 0x23  # FIFO Enable
 _MPU6050_INT_PIN_CONFIG = 0x37  # Interrupt pin configuration register
 _MPU6050_ACCEL_OUT = 0x3B  # base address for sensor data reads
 _MPU6050_TEMP_OUT = 0x41  # Temperature data high byte register
@@ -72,6 +73,8 @@ _MPU6050_SIG_PATH_RESET = 0x68  # register to reset sensor signal paths
 _MPU6050_USER_CTRL = 0x6A  # FIFO and I2C Master control register
 _MPU6050_PWR_MGMT_1 = 0x6B  # Primary power/sleep control register
 _MPU6050_PWR_MGMT_2 = 0x6C  # Secondary power/sleep control register
+_MPU6050_FIFO_COUNT = 0x72  # FIFO byte count register (high half)
+_MPU6050_FIFO_R_W = 0x74  # FIFO data register
 _MPU6050_WHO_AM_I = 0x75  # Divice ID register
 
 STANDARD_GRAVITY = 9.80665
@@ -170,7 +173,7 @@ class Rate:  # pylint: disable=too-few-public-methods
     CYCLE_40_HZ = 3  # 40 Hz
 
 
-class MPU6050:
+class MPU6050:  # pylint: disable=too-many-instance-attributes
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
     :param ~busio.I2C i2c_bus: The I2C bus the device is connected to
@@ -215,6 +218,7 @@ class MPU6050:
         self._filter_bandwidth = Bandwidth.BAND_260_HZ
         self._gyro_range = GyroRange.RANGE_500_DPS
         self._accel_range = Range.RANGE_2_G
+        self._accel_scale = 1.0 / [16384, 8192, 4096, 2048][self._accel_range]
         sleep(0.100)
         self.clock_source = (
             ClockSource.CLKSEL_INTERNAL_X
@@ -257,6 +261,11 @@ class MPU6050:
     sample_rate_divisor = UnaryStruct(_MPU6050_SMPLRT_DIV, ">B")
     """The sample rate divisor. See the datasheet for additional detail"""
 
+    fifo_en = RWBit(_MPU6050_USER_CTRL, 6)
+    fiforst = RWBit(_MPU6050_USER_CTRL, 2)
+    accel_fifo_en = RWBit(_MPU6050_FIFO_EN, 3)
+    fifo_count = ROUnaryStruct(_MPU6050_FIFO_COUNT, ">h")
+
     @property
     def temperature(self) -> float:
         """The current temperature in  º Celsius"""
@@ -268,35 +277,26 @@ class MPU6050:
     def acceleration(self) -> Tuple[float, float, float]:
         """Acceleration X, Y, and Z axis data in :math:`m/s^2`"""
         raw_data = self._raw_accel_data
-        raw_x = raw_data[0][0]
-        raw_y = raw_data[1][0]
-        raw_z = raw_data[2][0]
+        return self.scale_accel([raw_data[0][0], raw_data[1][0], raw_data[2][0]])
 
-        accel_range = self._accel_range
-        accel_scale = 1
-        if accel_range == Range.RANGE_16_G:
-            accel_scale = 2048
-        if accel_range == Range.RANGE_8_G:
-            accel_scale = 4096
-        if accel_range == Range.RANGE_4_G:
-            accel_scale = 8192
-        if accel_range == Range.RANGE_2_G:
-            accel_scale = 16384
-
-        # setup range dependant scaling
-        accel_x = (raw_x / accel_scale) * STANDARD_GRAVITY
-        accel_y = (raw_y / accel_scale) * STANDARD_GRAVITY
-        accel_z = (raw_z / accel_scale) * STANDARD_GRAVITY
-
+    def scale_accel(self, raw_data) -> Tuple[float, float, float]:
+        """Scale raw X, Y, and Z axis data to :math:`m/s^2`"""
+        accel_x = (raw_data[0] * self._accel_scale) * STANDARD_GRAVITY
+        accel_y = (raw_data[1] * self._accel_scale) * STANDARD_GRAVITY
+        accel_z = (raw_data[2] * self._accel_scale) * STANDARD_GRAVITY
         return (accel_x, accel_y, accel_z)
 
     @property
     def gyro(self) -> Tuple[float, float, float]:
         """Gyroscope X, Y, and Z axis data in :math:`º/s`"""
         raw_data = self._raw_gyro_data
-        raw_x = raw_data[0][0]
-        raw_y = raw_data[1][0]
-        raw_z = raw_data[2][0]
+        return self.scale_gyro((raw_data[0][0], raw_data[1][0], raw_data[2][0]))
+
+    def scale_gyro(self, raw_data) -> Tuple[float, float, float]:
+        """Scale raw gyro data to :math:`º/s`"""
+        raw_x = raw_data[0]
+        raw_y = raw_data[1]
+        raw_z = raw_data[2]
 
         gyro_scale = 1
         gyro_range = self._gyro_range
@@ -309,7 +309,7 @@ class MPU6050:
         if gyro_range == GyroRange.RANGE_2000_DPS:
             gyro_scale = 16.4
 
-        # setup range dependant scaling
+        # setup range dependent scaling
         gyro_x = radians(raw_x / gyro_scale)
         gyro_y = radians(raw_y / gyro_scale)
         gyro_z = radians(raw_z / gyro_scale)
@@ -349,6 +349,7 @@ class MPU6050:
         if (value < 0) or (value > 3):
             raise ValueError("accelerometer_range must be a Range")
         self._accel_range = value
+        self._accel_scale = 1.0 / [16384, 8192, 4096, 2048][value]
         sleep(0.01)
 
     @property
@@ -388,3 +389,13 @@ class MPU6050:
                 "clock_source must be ClockSource value, integer from 0 - 7."
             )
         self._clksel = value
+
+    def read_whole_fifo(self):
+        """Return raw FIFO bytes"""
+        # This code must be fast to ensure samples are contiguous
+        count = self.fifo_count
+        buf = bytearray(count)
+        buf[0] = _MPU6050_FIFO_R_W
+        with self.i2c_device:
+            self.i2c_device.write_then_readinto(buf, buf, out_end=1, in_start=0)
+        return buf
