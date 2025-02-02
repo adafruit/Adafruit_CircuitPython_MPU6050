@@ -35,3 +35,13 @@ Provides an example on how to use the sensor as an inclinometer
 .. literalinclude:: ../examples/mpu6050_inclinometer.py
     :caption: examples/mpu6050_inclinometer.py
     :linenos:
+
+
+DisplayIO Simpletest
+---------------------
+
+This is a simple test for boards with built-in display.
+
+.. literalinclude:: ../examples/mpu6050_displayio_simpletest.py
+    :caption: examples/mpu6050_displayio_simpletest.py
+    :linenos:
