@@ -20,9 +20,9 @@ mpu = adafruit_mpu6050.MPU6050(i2c)
 
 # Create Label(s) to show the readings. If you have a very small
 # display you may need to change to scale=1.
-display_output_acceleration = Label(FONT, text="", scale=2)
-display_output_gyro = Label(FONT, text="", scale=2)
-display_output_temperature = Label(FONT, text="", scale=2)
+display_output_acceleration = Label(FONT, text="", scale=1)
+display_output_gyro = Label(FONT, text="", scale=1)
+display_output_temperature = Label(FONT, text="", scale=1)
 
 # place the label(s) in the middle of the screen with anchored positioning
 display_output_acceleration.anchor_point = (0, 0)
