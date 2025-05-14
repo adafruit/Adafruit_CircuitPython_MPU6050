@@ -2,7 +2,9 @@
 # SPDX-License-Identifier: MIT
 
 import time
+
 import board
+
 import adafruit_mpu6050
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
@@ -13,6 +15,9 @@ mpu.gyro_range = adafruit_mpu6050.GyroRange.RANGE_250_DPS
 
 while True:
     # this prints out all the values like a tuple which Mu's plotter prefer
-    print("(%.2f, %.2f, %.2f " % (mpu.acceleration), end=", ")
-    print("%.2f, %.2f, %.2f)" % (mpu.gyro))
+    print(
+        f"({mpu.acceleration[0]:.2f}, {mpu.acceleration[1]:.2f}, {mpu.acceleration[2]:.2f} ",
+        end=", ",
+    )
+    print(f"{mpu.gyro[0]:.2f}, {mpu.gyro[1]:.2f}, {mpu.gyro[2]:.2f})")
     time.sleep(0.010)
