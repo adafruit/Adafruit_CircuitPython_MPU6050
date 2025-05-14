@@ -8,7 +8,9 @@
 
 import time
 from math import atan2, degrees
+
 import board
+
 import adafruit_mpu6050
 
 i2c = board.I2C()  # uses board.SCL and board.SDA
@@ -38,5 +40,5 @@ def get_inclination(_sensor):
 
 while True:
     angle_xz, angle_yz = get_inclination(sensor)
-    print("XZ angle = {:6.2f}deg   YZ angle = {:6.2f}deg".format(angle_xz, angle_yz))
+    print(f"XZ angle = {angle_xz:6.2f}deg   YZ angle = {angle_yz:6.2f}deg")
     time.sleep(0.2)

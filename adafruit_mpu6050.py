@@ -41,14 +41,16 @@ __repo__ = "https://github.com/adafruit/Adafruit_CircuitPython_MPU6050.git"
 
 from math import radians
 from time import sleep
-from adafruit_register.i2c_struct import UnaryStruct, ROUnaryStruct
-from adafruit_register.i2c_struct_array import StructArray
+
+from adafruit_bus_device import i2c_device
 from adafruit_register.i2c_bit import RWBit
 from adafruit_register.i2c_bits import RWBits
-from adafruit_bus_device import i2c_device
+from adafruit_register.i2c_struct import ROUnaryStruct, UnaryStruct
+from adafruit_register.i2c_struct_array import StructArray
 
 try:
     from typing import Tuple
+
     from busio import I2C
 except ImportError:
     pass
@@ -80,7 +82,7 @@ _MPU6050_WHO_AM_I = 0x75  # Divice ID register
 STANDARD_GRAVITY = 9.80665
 
 
-class ClockSource:  # pylint: disable=too-few-public-methods
+class ClockSource:
     """Allowed values for :py:attr:`clock_source`.
 
     * :py:attr:'ClockSource.CLKSEL_INTERNAL_8MHz
@@ -103,7 +105,7 @@ class ClockSource:  # pylint: disable=too-few-public-methods
     CLKSEL_STOP = 7  # Stops the clock, constant reset mode
 
 
-class Range:  # pylint: disable=too-few-public-methods
+class Range:
     """Allowed values for :py:attr:`accelerometer_range`.
 
     * :py:attr:`Range.RANGE_2_G`
@@ -119,7 +121,7 @@ class Range:  # pylint: disable=too-few-public-methods
     RANGE_16_G = 3  # +/- 16g
 
 
-class GyroRange:  # pylint: disable=too-few-public-methods
+class GyroRange:
     """Allowed values for :py:attr:`gyro_range`.
 
     * :py:attr:`GyroRange.RANGE_250_DPS`
@@ -135,7 +137,7 @@ class GyroRange:  # pylint: disable=too-few-public-methods
     RANGE_2000_DPS = 3  # +/- 2000 deg/s
 
 
-class Bandwidth:  # pylint: disable=too-few-public-methods
+class Bandwidth:
     """Allowed values for :py:attr:`filter_bandwidth`.
 
     * :py:attr:`Bandwidth.BAND_260_HZ`
@@ -157,7 +159,7 @@ class Bandwidth:  # pylint: disable=too-few-public-methods
     BAND_5_HZ = 6  # 5 Hz
 
 
-class Rate:  # pylint: disable=too-few-public-methods
+class Rate:
     """Allowed values for :py:attr:`cycle_rate`.
 
     * :py:attr:`Rate.CYCLE_1_25_HZ`
@@ -173,7 +175,7 @@ class Rate:  # pylint: disable=too-few-public-methods
     CYCLE_40_HZ = 3  # 40 Hz
 
 
-class MPU6050:  # pylint: disable=too-many-instance-attributes
+class MPU6050:
     """Driver for the MPU6050 6-DoF accelerometer and gyroscope.
 
     :param ~busio.I2C i2c_bus: The I2C bus the device is connected to
@@ -220,9 +222,7 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
         self._accel_range = Range.RANGE_2_G
         self._accel_scale = 1.0 / [16384, 8192, 4096, 2048][self._accel_range]
         sleep(0.100)
-        self.clock_source = (
-            ClockSource.CLKSEL_INTERNAL_X
-        )  # set to use gyro x-axis as reference
+        self.clock_source = ClockSource.CLKSEL_INTERNAL_X  # set to use gyro x-axis as reference
         sleep(0.100)
         self.sleep = False
         sleep(0.010)
@@ -385,9 +385,7 @@ class MPU6050:  # pylint: disable=too-many-instance-attributes
     def clock_source(self, value: int) -> None:
         """Select between Internal/External clock sources"""
         if value not in range(8):
-            raise ValueError(
-                "clock_source must be ClockSource value, integer from 0 - 7."
-            )
+            raise ValueError("clock_source must be ClockSource value, integer from 0 - 7.")
         self._clksel = value
 
     def read_whole_fifo(self):

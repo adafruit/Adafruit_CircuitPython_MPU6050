@@ -4,10 +4,12 @@
 # SPDX-License-Identifier: MIT
 
 import time
+
 import board
 from adafruit_display_text.bitmap_label import Label
-from terminalio import FONT
 from displayio import Group
+from terminalio import FONT
+
 import adafruit_mpu6050
 
 # Simple demo of using the built-in display.
@@ -55,12 +57,8 @@ while True:
     # update the text of the label(s) to show the sensor readings
     accx, accy, accz = mpu.acceleration
     gyro_x, gyro_y, gyro_z = mpu.gyro
-    display_output_acceleration.text = (
-        f"Acc X:{accx:.1f} Y:{accy:.1f} Z:{accz:.1f} m/s^2"
-    )
-    display_output_gyro.text = (
-        f"Gyro X:{gyro_x:.1f} Y:{gyro_y:.1f} Z:{gyro_z:.1f} rad/s"
-    )
+    display_output_acceleration.text = f"Acc X:{accx:.1f} Y:{accy:.1f} Z:{accz:.1f} m/s^2"
+    display_output_gyro.text = f"Gyro X:{gyro_x:.1f} Y:{gyro_y:.1f} Z:{gyro_z:.1f} rad/s"
     display_output_temperature.text = f"Temp: {mpu.temperature:.1f} C"
     # wait for a bit
     time.sleep(0.5)
