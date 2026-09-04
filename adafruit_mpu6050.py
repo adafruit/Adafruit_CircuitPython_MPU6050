@@ -234,7 +234,7 @@ class MPU6050:
             sleep(0.001)
         sleep(0.100)
 
-        _signal_path_reset = 0b111  # reset all sensors
+        self._signal_path_reset = 0b111  # reset all sensors
         sleep(0.100)
 
     _clksel = RWBits(3, _MPU6050_PWR_MGMT_1, 0)
