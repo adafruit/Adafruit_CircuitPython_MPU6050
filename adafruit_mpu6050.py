@@ -246,7 +246,7 @@ class MPU6050:
     _gyro_range = RWBits(2, _MPU6050_GYRO_CONFIG, 3)
     _accel_range = RWBits(2, _MPU6050_ACCEL_CONFIG, 3)
 
-    _filter_bandwidth = RWBits(2, _MPU6050_CONFIG, 3)
+    _filter_bandwidth = RWBits(3, _MPU6050_CONFIG, 0)
 
     _raw_accel_data = StructArray(_MPU6050_ACCEL_OUT, ">h", 3)
     _raw_gyro_data = StructArray(_MPU6050_GYRO_OUT, ">h", 3)
